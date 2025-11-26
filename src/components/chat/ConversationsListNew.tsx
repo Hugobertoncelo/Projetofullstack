@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Users,
@@ -8,26 +8,68 @@ import {
   Sparkles,
   Hash,
 } from "lucide-react";
-import { Conversation } from "../../types";
+import { Conversation, Message } from "../../types";
 import { formatMessageTime, getInitials } from "../../lib/utils";
 import LoadingSpinner from "../LoadingSpinner";
 import StartNewChat from "./StartNewChat";
+import { socketService } from "../../lib/socket";
+import { useAuth } from "../../hooks/useAuth";
+
 interface ConversationsListProps {
   conversations: Conversation[];
   selectedConversationId: string | null;
   onSelectConversation: (id: string) => void;
   onStartNewConversation: (userId: string) => void;
   isLoading: boolean;
+  onNewMessage?: (conversationId: string) => void;
 }
+
 export default function ConversationsList({
   conversations,
   selectedConversationId,
   onSelectConversation,
   onStartNewConversation,
   isLoading,
+  onNewMessage,
 }: ConversationsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showStartNewChat, setShowStartNewChat] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (selectedConversationId) {
+      setUnreadCounts((prev) => ({
+        ...prev,
+        [selectedConversationId]: 0,
+      }));
+    }
+  }, [selectedConversationId]);
+
+  useEffect(() => {
+    const handleNewMessage = (message: Message) => {
+      if (
+        message.senderId !== user?.id &&
+        message.conversationId !== selectedConversationId
+      ) {
+        setUnreadCounts((prev) => ({
+          ...prev,
+          [message.conversationId]: (prev[message.conversationId] || 0) + 1,
+        }));
+      }
+    };
+
+    socketService.onMessageReceived(handleNewMessage);
+
+    return () => {
+      socketService.offMessageReceived(handleNewMessage);
+    };
+  }, [user?.id, selectedConversationId]);
+
+  useEffect(() => {
+    if (onNewMessage) {
+    }
+  }, [onNewMessage]);
   const getConversationName = (conversation: Conversation) => {
     if (conversation.name) return conversation.name;
     if (conversation.isGroup) return "Group Chat";
@@ -153,10 +195,11 @@ export default function ConversationsList({
                     </p>
                   )}
                 </div>
-                {}
-                <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full px-2 py-1 min-w-[1.5rem] text-center ml-3 pulse-glow">
-                  3
-                </div>
+                {unreadCounts[conversation.id] > 0 && (
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full px-2 py-1 min-w-[1.5rem] text-center ml-3 pulse-glow">
+                    {unreadCounts[conversation.id]}
+                  </div>
+                )}
               </button>
             ))}
           </div>
