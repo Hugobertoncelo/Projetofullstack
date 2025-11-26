@@ -116,6 +116,23 @@ export function useConversations() {
     },
     []
   );
+  const deleteConversation = useCallback(async (conversationId: string) => {
+    try {
+      const response = await apiService.leaveConversation(conversationId);
+      if (response.success) {
+        setConversations((prev) =>
+          prev.filter((conversation) => conversation.id !== conversationId)
+        );
+        return true;
+      } else {
+        console.error("❌ API Error:", response.error);
+        throw new Error(response.error || "Failed to delete conversation");
+      }
+    } catch (error: any) {
+      console.error("💥 Error deleting conversation:", error);
+      throw error;
+    }
+  }, []);
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
@@ -166,6 +183,7 @@ export function useConversations() {
     updateConversationLastMessage,
     removeConversation,
     updateConversation,
+    deleteConversation,
   };
 }
 export function useConversation(conversationId: string | null) {

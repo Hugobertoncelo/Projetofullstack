@@ -11,8 +11,12 @@ export default function ChatLayout() {
   >(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { user } = useAuth();
-  const { conversations, isLoading, createDirectConversation } =
-    useConversations();
+  const {
+    conversations,
+    isLoading,
+    createDirectConversation,
+    deleteConversation,
+  } = useConversations();
   const selectedConversation = conversations.find(
     (conv) => conv.id === selectedConversationId
   );
@@ -26,6 +30,18 @@ export default function ChatLayout() {
       console.error("Error creating conversation:", error);
     }
   };
+
+  const handleDeleteConversation = async (conversationId: string) => {
+    try {
+      await deleteConversation(conversationId);
+      if (selectedConversationId === conversationId) {
+        setSelectedConversationId(null);
+      }
+    } catch (error) {
+      console.error("Error deleting conversation:", error);
+    }
+  };
+
   return (
     <div className="flex h-screen animated-bg">
       {}
@@ -40,6 +56,7 @@ export default function ChatLayout() {
           selectedConversationId={selectedConversationId}
           onSelectConversation={setSelectedConversationId}
           onStartNewConversation={handleStartNewConversation}
+          onDeleteConversation={handleDeleteConversation}
           isLoading={isLoading}
         />
       </div>

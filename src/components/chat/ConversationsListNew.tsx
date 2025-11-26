@@ -7,6 +7,7 @@ import {
   Plus,
   Sparkles,
   Hash,
+  Trash2,
 } from "lucide-react";
 import { Conversation, Message } from "../../types";
 import { formatMessageTime, getInitials } from "../../lib/utils";
@@ -20,6 +21,7 @@ interface ConversationsListProps {
   selectedConversationId: string | null;
   onSelectConversation: (id: string) => void;
   onStartNewConversation: (userId: string) => void;
+  onDeleteConversation: (id: string) => void;
   isLoading: boolean;
   onNewMessage?: (conversationId: string) => void;
 }
@@ -29,12 +31,16 @@ export default function ConversationsList({
   selectedConversationId,
   onSelectConversation,
   onStartNewConversation,
+  onDeleteConversation,
   isLoading,
   onNewMessage,
 }: ConversationsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showStartNewChat, setShowStartNewChat] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const [hoveredConversation, setHoveredConversation] = useState<string | null>(
+    null
+  );
   const { user } = useAuth();
 
   useEffect(() => {
@@ -97,6 +103,19 @@ export default function ConversationsList({
     onStartNewConversation(userId);
     setShowStartNewChat(false);
   };
+
+  const handleDeleteConversation = (
+    e: React.MouseEvent,
+    conversationId: string
+  ) => {
+    e.stopPropagation();
+    if (window.confirm("Tem certeza que deseja remover esta conversa?")) {
+      onDeleteConversation(conversationId);
+      if (selectedConversationId === conversationId) {
+        onSelectConversation("");
+      }
+    }
+  };
   return (
     <div className="flex flex-col h-full">
       {}
@@ -152,55 +171,75 @@ export default function ConversationsList({
         ) : (
           <div className="p-4 space-y-2">
             {filteredConversations.map((conversation, index) => (
-              <button
+              <div
                 key={conversation.id}
-                onClick={() => onSelectConversation(conversation.id)}
-                className={`w-full flex items-center p-4 rounded-2xl transition-all duration-300 hover-lift text-left ${
-                  selectedConversationId === conversation.id
-                    ? "glass-effect border-l-4 border-purple-400 transform scale-105"
-                    : "hover:bg-white/10"
-                }`}
-                style={{ animationDelay: `${index * 50}ms` }}
+                className="relative group"
+                onMouseEnter={() => setHoveredConversation(conversation.id)}
+                onMouseLeave={() => setHoveredConversation(null)}
               >
-                <div className="relative mr-4">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
-                    {conversation.isGroup ? (
-                      <Users className="w-7 h-7" />
-                    ) : (
-                      getInitials(getConversationName(conversation))
+                <button
+                  onClick={() => onSelectConversation(conversation.id)}
+                  className={`w-full flex items-center p-4 rounded-2xl transition-all duration-300 hover-lift text-left ${
+                    selectedConversationId === conversation.id
+                      ? "glass-effect border-l-4 border-purple-400 transform scale-105"
+                      : "hover:bg-white/10"
+                  }`}
+                  style={{ animationDelay: `${index * 50}ms` }}
+                >
+                  <div className="relative mr-4">
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center text-white font-bold text-lg">
+                      {conversation.isGroup ? (
+                        <Users className="w-7 h-7" />
+                      ) : (
+                        getInitials(getConversationName(conversation))
+                      )}
+                    </div>
+                    {!conversation.isGroup && (
+                      <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white/20 pulse-glow"></div>
                     )}
                   </div>
-                  {!conversation.isGroup && (
-                    <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white/20 pulse-glow"></div>
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-white truncate text-lg">
-                      {getConversationName(conversation)}
-                    </h3>
-                    {conversation.lastMessage && (
-                      <span className="text-xs text-white/50 flex-shrink-0 ml-2">
-                        {formatMessageTime(conversation.lastMessage.createdAt)}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-sm text-white/70 truncate mb-1">
-                    {getLastMessagePreview(conversation)}
-                  </p>
-                  {conversation.isGroup && conversation.members && (
-                    <p className="text-xs text-white/50 flex items-center">
-                      <Users className="w-3 h-3 mr-1" />
-                      {conversation.members.length} members
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-white truncate text-lg">
+                        {getConversationName(conversation)}
+                      </h3>
+                      {conversation.lastMessage && (
+                        <span className="text-xs text-white/50 flex-shrink-0 ml-2">
+                          {formatMessageTime(
+                            conversation.lastMessage.createdAt
+                          )}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-sm text-white/70 truncate mb-1">
+                      {getLastMessagePreview(conversation)}
                     </p>
-                  )}
-                </div>
-                {unreadCounts[conversation.id] > 0 && (
-                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full px-2 py-1 min-w-[1.5rem] text-center ml-3 pulse-glow">
-                    {unreadCounts[conversation.id]}
+                    {conversation.isGroup && conversation.members && (
+                      <p className="text-xs text-white/50 flex items-center">
+                        <Users className="w-3 h-3 mr-1" />
+                        {conversation.members.length} members
+                      </p>
+                    )}
                   </div>
+                  {unreadCounts[conversation.id] > 0 && (
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full px-2 py-1 min-w-[1.5rem] text-center ml-3 pulse-glow">
+                      {unreadCounts[conversation.id]}
+                    </div>
+                  )}
+                </button>
+
+                {hoveredConversation === conversation.id && (
+                  <button
+                    onClick={(e) =>
+                      handleDeleteConversation(e, conversation.id)
+                    }
+                    className="absolute top-2 right-2 p-2 bg-red-500/80 hover:bg-red-500 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110"
+                    title="Remover conversa"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 )}
-              </button>
+              </div>
             ))}
           </div>
         )}
