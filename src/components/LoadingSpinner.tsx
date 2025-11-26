@@ -1,10 +1,8 @@
-﻿import { cn } from "../lib/utils";
-
+import { cn } from "../lib/utils";
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   className?: string;
 }
-
 export default function LoadingSpinner({
   size = "md",
   className,
@@ -14,7 +12,6 @@ export default function LoadingSpinner({
     md: "h-6 w-6",
     lg: "h-8 w-8",
   };
-
   return (
     <div
       className={cn(

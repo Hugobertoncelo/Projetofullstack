@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -20,7 +19,6 @@ import {
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { motion } from "framer-motion";
 import { validatePassword, isValidUsername } from "../../lib/utils";
-
 const registerSchema = z
   .object({
     email: z.string().email("Invalid email address"),
@@ -46,9 +44,7 @@ const registerSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
-
 type RegisterFormData = z.infer<typeof registerSchema>;
-
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -58,10 +54,8 @@ export default function RegisterPage() {
     isValid: false,
     errors: [] as string[],
   });
-
   const { register: registerUser, isAuthenticated } = useAuth();
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -70,25 +64,20 @@ export default function RegisterPage() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
-
   const watchPassword = watch("password", "");
-
   useEffect(() => {
     if (isAuthenticated) {
       router.push("/");
     }
   }, [isAuthenticated, router]);
-
   useEffect(() => {
     if (watchPassword) {
       setPasswordStrength(validatePassword(watchPassword));
     }
   }, [watchPassword]);
-
   const onSubmit = async (data: RegisterFormData) => {
     setIsLoading(true);
     setError("");
-
     try {
       const result = await registerUser(
         data.email,
@@ -96,7 +85,6 @@ export default function RegisterPage() {
         data.password,
         data.displayName
       );
-
       if (result.success) {
         router.push("/");
       } else {
@@ -108,7 +96,6 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
-
   if (isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -116,7 +103,6 @@ export default function RegisterPage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4 py-12">
       <motion.div
@@ -144,7 +130,6 @@ export default function RegisterPage() {
               Participe de conversas seguras com milhares de usuários.
             </p>
           </div>
-
           <div className="card-content">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {error && (
@@ -156,7 +141,6 @@ export default function RegisterPage() {
                   {error}
                 </motion.div>
               )}
-
               <div className="space-y-4">
                 <div>
                   <label
@@ -182,7 +166,6 @@ export default function RegisterPage() {
                     </p>
                   )}
                 </div>
-
                 <div>
                   <label
                     htmlFor="username"
@@ -207,7 +190,6 @@ export default function RegisterPage() {
                     </p>
                   )}
                 </div>
-
                 <div>
                   <label
                     htmlFor="displayName"
@@ -225,7 +207,6 @@ export default function RegisterPage() {
                     disabled={isLoading}
                   />
                 </div>
-
                 <div>
                   <label
                     htmlFor="password"
@@ -260,7 +241,6 @@ export default function RegisterPage() {
                       {errors.password.message}
                     </p>
                   )}
-
                   {watchPassword && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
@@ -349,7 +329,6 @@ export default function RegisterPage() {
                     </motion.div>
                   )}
                 </div>
-
                 <div>
                   <label
                     htmlFor="confirmPassword"
@@ -388,7 +367,6 @@ export default function RegisterPage() {
                   )}
                 </div>
               </div>
-
               <button
                 type="submit"
                 disabled={isLoading || !passwordStrength.isValid}
@@ -403,7 +381,6 @@ export default function RegisterPage() {
                   "Criar Conta"
                 )}
               </button>
-
               <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Já tem uma conta?{" "}
@@ -418,7 +395,6 @@ export default function RegisterPage() {
             </form>
           </div>
         </div>
-
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             Ao criar uma conta, você concorda com nossos termos.{" "}

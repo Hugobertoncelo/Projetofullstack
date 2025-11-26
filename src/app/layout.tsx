@@ -3,14 +3,11 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../hooks/useAuth";
 import { ThemeProvider } from "../components/ThemeProvider";
-
 const inter = Inter({ subsets: ["latin"] });
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
 };
-
 export const metadata: Metadata = {
   title: "RealTime Chat - Secure & Fast Messaging",
   description:
@@ -38,28 +35,25 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
 };
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
+    <html lang="en" suppressHydrationWarning>      <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin=""
         />
-      </head>
-      <body
+      </head>      <body
         className={`${inter.className} antialiased min-h-screen bg-background`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { Search, Users, UserPlus, MessageCircle, X } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
@@ -7,7 +6,6 @@ import { apiService } from "../../lib/api";
 import { getInitials } from "../../lib/utils";
 import LoadingSpinner from "../LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
-
 interface User {
   id: string;
   username: string;
@@ -16,13 +14,11 @@ interface User {
   isOnline: boolean;
   lastSeen: string;
 }
-
 interface StartNewChatProps {
   isOpen: boolean;
   onClose: () => void;
   onStartConversation: (userId: string) => void;
 }
-
 export default function StartNewChat({
   isOpen,
   onClose,
@@ -32,22 +28,18 @@ export default function StartNewChat({
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
   useEffect(() => {
     if (isOpen) {
       loadUsers();
     }
   }, [isOpen]);
-
   const loadUsers = async () => {
     try {
       setIsLoading(true);
       console.log("👥 Loading users...");
-
       const response = await apiService.getOnlineUsers();
       if (response.success && response.data?.users) {
         console.log("✅ Users loaded:", response.data.users.length);
-        // Filter out current user
         const filteredUsers = response.data.users.filter(
           (u: User) => u.id !== user?.id
         );
@@ -62,24 +54,19 @@ export default function StartNewChat({
   const handleStartConversation = async (userId: string) => {
     try {
       console.log("🚀 Starting conversation with user:", userId);
-
-      // Call the parent handler with userId
       onStartConversation(userId);
       onClose();
     } catch (error) {
       console.error("❌ Error creating conversation:", error);
     }
   };
-
   const filteredUsers = users.filter(
     (u) =>
       searchQuery === "" ||
       u.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       u.displayName.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   if (!isOpen) return null;
-
   return (
     <AnimatePresence>
       <motion.div
@@ -96,7 +83,7 @@ export default function StartNewChat({
           className="bg-background border border-border rounded-lg w-full max-w-md max-h-[80vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
+          {}
           <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <UserPlus size={20} className="text-primary" />
@@ -109,8 +96,7 @@ export default function StartNewChat({
               <X size={20} />
             </button>
           </div>
-
-          {/* Search */}
+          {}
           <div className="p-4 border-b border-border">
             <div className="relative">
               <Search
@@ -126,8 +112,7 @@ export default function StartNewChat({
               />
             </div>
           </div>
-
-          {/* Users List */}
+          {}
           <div className="overflow-y-auto max-h-96">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
@@ -172,7 +157,6 @@ export default function StartNewChat({
                           <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
                         )}
                       </div>
-
                       <div className="flex-1 min-w-0">
                         <h3 className="font-medium truncate">
                           {targetUser.displayName || targetUser.username}
@@ -193,15 +177,13 @@ export default function StartNewChat({
                         </p>
                       </div>
                     </div>
-
                     <MessageCircle size={20} className="text-primary" />
                   </motion.button>
                 ))}
               </div>
             )}
           </div>
-
-          {/* Footer */}
+          {}
           <div className="p-4 border-t border-border text-center">
             <p className="text-xs text-muted-foreground">
               {filteredUsers.length} usuário

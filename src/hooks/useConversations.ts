@@ -1,22 +1,17 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 import { apiService } from "../lib/api";
 import { socketService } from "../lib/socket";
 import { Conversation, Message, TypingIndicator } from "../types";
-
 export function useConversations() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const fetchConversations = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
-
       const response = await apiService.getConversations();
-
       if (response.success && response.data?.conversations) {
         console.log(
           "✅ Conversations loaded:",
@@ -37,10 +32,8 @@ export function useConversations() {
   const createDirectConversation = useCallback(async (userId: string) => {
     try {
       console.log("🚀 Creating direct conversation with userId:", userId);
-
       const response = await apiService.createDirectConversation(userId);
       console.log("📡 API Response:", response);
-
       if (response.success && response.data?.conversation) {
         const newConversation = response.data.conversation;
         console.log("✅ New conversation created:", {
@@ -49,7 +42,6 @@ export function useConversations() {
           membersCount: newConversation.members?.length,
           hasMessages: !!newConversation.messages,
         });
-
         setConversations((prev) => {
           const updated = [newConversation, ...prev];
           console.log(
@@ -69,7 +61,6 @@ export function useConversations() {
       throw error;
     }
   }, []);
-
   const createGroupConversation = useCallback(
     async (name: string, userIds: string[]) => {
       try {
@@ -91,7 +82,6 @@ export function useConversations() {
     },
     []
   );
-
   const updateConversationLastMessage = useCallback(
     (conversationId: string, message: Message) => {
       setConversations((prev) =>
@@ -109,13 +99,11 @@ export function useConversations() {
     },
     []
   );
-
   const removeConversation = useCallback((conversationId: string) => {
     setConversations((prev) =>
       prev.filter((conv) => conv.id !== conversationId)
     );
   }, []);
-
   const updateConversation = useCallback(
     (updatedConversation: Partial<Conversation> & { id: string }) => {
       setConversations((prev) =>
@@ -128,64 +116,46 @@ export function useConversations() {
     },
     []
   );
-
   useEffect(() => {
     fetchConversations();
   }, [fetchConversations]);
-
-  // Listen for new messages to update conversation list
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
       updateConversationLastMessage(message.conversationId, message);
     };
-
     socketService.onMessageReceived(handleNewMessage);
-
     return () => {
       socketService.offMessageReceived(handleNewMessage);
     };
   }, [updateConversationLastMessage]);
-
-  // Listen for conversation updates
   useEffect(() => {
     const handleConversationUpdate = (conversation: Conversation) => {
       updateConversation(conversation);
     };
-
     socketService.onConversationUpdated(handleConversationUpdate);
-
     return () => {
       socketService.offConversationUpdated(handleConversationUpdate);
     };
   }, [updateConversation]);
-  // Listen for real-time conversation updates (but not individual messages to avoid duplicates)
   useEffect(() => {
     const handleConversationUpdate = (updatedConversation: Conversation) => {
       console.log("🔄 Conversation updated:", updatedConversation.id);
-
       setConversations((prev) => {
         const exists = prev.find((conv) => conv.id === updatedConversation.id);
-
         if (exists) {
-          // Update existing conversation
           return prev.map((conv) =>
             conv.id === updatedConversation.id ? updatedConversation : conv
           );
         } else {
-          // Add new conversation
           return [updatedConversation, ...prev];
         }
       });
     };
-
-    // Only listen for conversation updates, not individual messages
     socketService.onConversationUpdated(handleConversationUpdate);
-
     return () => {
       socketService.offConversationUpdated(handleConversationUpdate);
     };
   }, []);
-
   return {
     conversations,
     isLoading,
@@ -198,7 +168,6 @@ export function useConversations() {
     updateConversation,
   };
 }
-
 export function useConversation(conversationId: string | null) {
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -207,14 +176,11 @@ export function useConversation(conversationId: string | null) {
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [hasMoreMessages, setHasMoreMessages] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
   const fetchConversation = useCallback(async () => {
     if (!conversationId) return;
-
     try {
       setIsLoading(true);
       setError(null);
-
       const response = await apiService.getConversation(conversationId);
       if (response.success && response.data?.conversation) {
         setConversation(response.data.conversation);
@@ -228,15 +194,12 @@ export function useConversation(conversationId: string | null) {
       setIsLoading(false);
     }
   }, [conversationId]);
-
   const fetchMessages = useCallback(
     async (page = 1, limit = 50) => {
       if (!conversationId) return;
-
       try {
         setIsLoadingMessages(true);
         setError(null);
-
         const response = await apiService.getMessages(
           conversationId,
           page,
@@ -244,13 +207,11 @@ export function useConversation(conversationId: string | null) {
         );
         if (response.success && response.data?.messages) {
           const newMessages = response.data.messages;
-
           if (page === 1) {
             setMessages(newMessages);
           } else {
             setMessages((prev) => [...newMessages, ...prev]);
           }
-
           setHasMoreMessages(response.data.pagination?.hasNext || false);
         } else {
           setError(response.error || "Failed to load messages");
@@ -264,11 +225,9 @@ export function useConversation(conversationId: string | null) {
     },
     [conversationId]
   );
-
   const sendMessage = useCallback(
     (content: string, replyToId?: string) => {
       if (!conversationId) return;
-
       socketService.sendMessage({
         conversationId,
         content,
@@ -278,40 +237,32 @@ export function useConversation(conversationId: string | null) {
     },
     [conversationId]
   );
-
   const startTyping = useCallback(() => {
     if (conversationId) {
       socketService.startTyping(conversationId);
     }
   }, [conversationId]);
-
   const stopTyping = useCallback(() => {
     if (conversationId) {
       socketService.stopTyping(conversationId);
     }
   }, [conversationId]);
-
   const addMessage = useCallback((message: Message) => {
     setMessages((prev) => [...prev, message]);
   }, []);
-
   const updateMessage = useCallback((updatedMessage: Message) => {
     setMessages((prev) =>
       prev.map((msg) => (msg.id === updatedMessage.id ? updatedMessage : msg))
     );
   }, []);
-
   const removeMessage = useCallback((messageId: string) => {
     setMessages((prev) => prev.filter((msg) => msg.id !== messageId));
   }, []);
-
-  // Join conversation when conversationId changes
   useEffect(() => {
     if (conversationId) {
       socketService.joinConversation(conversationId);
       fetchConversation();
       fetchMessages();
-
       return () => {
         socketService.leaveConversation(conversationId);
         setConversation(null);
@@ -320,23 +271,17 @@ export function useConversation(conversationId: string | null) {
       };
     }
   }, [conversationId, fetchConversation, fetchMessages]);
-
-  // Listen for new messages
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
       if (message.conversationId === conversationId) {
         addMessage(message);
       }
     };
-
     socketService.onMessageReceived(handleNewMessage);
-
     return () => {
       socketService.offMessageReceived(handleNewMessage);
     };
   }, [conversationId, addMessage]);
-
-  // Listen for typing indicators
   useEffect(() => {
     const handleUserTyping = (data: {
       userId: string;
@@ -355,7 +300,6 @@ export function useConversation(conversationId: string | null) {
         ]);
       }
     };
-
     const handleUserStoppedTyping = (data: {
       userId: string;
       conversationId: string;
@@ -366,16 +310,13 @@ export function useConversation(conversationId: string | null) {
         );
       }
     };
-
     socketService.onUserTyping(handleUserTyping);
     socketService.onUserStoppedTyping(handleUserStoppedTyping);
-
     return () => {
       socketService.offUserTyping(handleUserTyping);
       socketService.offUserStoppedTyping(handleUserStoppedTyping);
     };
   }, [conversationId]);
-
   return {
     conversation,
     messages,

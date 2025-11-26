@@ -1,30 +1,24 @@
-﻿"use client";
-
+"use client";
 import { useState } from "react";
 import ConversationsList from "./ConversationsListNew";
 import ChatArea from "./ChatAreaNew";
 import UserProfile from "./UserProfile";
 import { useConversations } from "../../hooks/useConversations";
 import { useAuth } from "../../hooks/useAuth";
-
 export default function ChatLayout() {
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | null
   >(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
   const { user } = useAuth();
   const { conversations, isLoading, createDirectConversation } =
     useConversations();
-
   const selectedConversation = conversations.find(
     (conv) => conv.id === selectedConversationId
   );
-
   const handleStartNewConversation = async (userId: string) => {
     try {
       const newConversation = await createDirectConversation(userId);
-
       if (newConversation) {
         setSelectedConversationId(newConversation.id);
       }
@@ -32,10 +26,9 @@ export default function ChatLayout() {
       console.error("Error creating conversation:", error);
     }
   };
-
   return (
     <div className="flex h-screen animated-bg">
-      {/* Sidebar */}
+      {}
       <div
         className={`${
           isSidebarOpen ? "w-80" : "w-0"
@@ -50,8 +43,7 @@ export default function ChatLayout() {
           isLoading={isLoading}
         />
       </div>
-
-      {/* Main Chat Area */}
+      {}
       <div className="flex-1 flex flex-col overflow-hidden">
         <ChatArea
           conversation={selectedConversation}

@@ -11,7 +11,6 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface Message {
   id: string;
   content: string;
@@ -26,7 +25,6 @@ export interface Message {
   replyToId?: string;
   replyTo?: Message;
 }
-
 export interface Conversation {
   id: string;
   name?: string;
@@ -37,21 +35,18 @@ export interface Conversation {
   messages: Message[];
   lastMessage?: Message;
 }
-
 export interface TypingIndicator {
   id: string;
   userId: string;
   conversationId: string;
   createdAt: Date;
 }
-
 export enum MessageType {
   TEXT = "TEXT",
   IMAGE = "IMAGE",
   FILE = "FILE",
   SYSTEM = "SYSTEM",
 }
-
 export interface AuthUser {
   id: string;
   email: string;
@@ -60,32 +55,27 @@ export interface AuthUser {
   avatar?: string;
   twoFactorEnabled: boolean;
 }
-
 export interface LoginCredentials {
   email: string;
   password: string;
   twoFactorCode?: string;
 }
-
 export interface RegisterCredentials {
   email: string;
   username: string;
   displayName?: string;
   password: string;
 }
-
 export interface ApiResponse<T = any> {
   success: boolean;
   data?: T;
   error?: string;
   message?: string;
 }
-
 export interface PaginationParams {
   page: number;
   limit: number;
 }
-
 export interface PaginatedResponse<T> {
   data: T[];
   pagination: {
@@ -97,15 +87,12 @@ export interface PaginatedResponse<T> {
     hasPrev: boolean;
   };
 }
-
 export interface SearchParams {
   query: string;
   type?: "messages" | "users" | "conversations";
   conversationId?: string;
 }
-
 export interface SocketEvents {
-  // Client to server events
   join_conversation: (conversationId: string) => void;
   leave_conversation: (conversationId: string) => void;
   send_message: (
@@ -113,8 +100,6 @@ export interface SocketEvents {
   ) => void;
   start_typing: (conversationId: string) => void;
   stop_typing: (conversationId: string) => void;
-
-  // Server to client events
   message_received: (message: Message) => void;
   user_typing: (data: {
     userId: string;

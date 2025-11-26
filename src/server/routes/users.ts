@@ -2,25 +2,20 @@ import express, { Response } from "express";
 import { prisma } from "../index";
 import { asyncHandler, createError } from "../middleware/errorHandler";
 import { AuthenticatedRequest } from "../middleware/auth";
-
 const router = express.Router();
-
-// Search users
 router.get(
   "/search",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { query, page = 1, limit = 20 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
-
     if (!query) {
       throw createError("Search query is required", 400);
     }
-
     const users = await prisma.user.findMany({
       where: {
         AND: [
           {
-            id: { not: req.user!.id }, // Exclude current user
+            id: { not: req.user!.id }, 
           },
           {
             OR: [
@@ -56,7 +51,6 @@ router.get(
       take: Number(limit),
       orderBy: [{ isOnline: "desc" }, { lastSeen: "desc" }],
     });
-
     const totalUsers = await prisma.user.count({
       where: {
         AND: [
@@ -85,9 +79,7 @@ router.get(
         ],
       },
     });
-
     const totalPages = Math.ceil(totalUsers / Number(limit));
-
     res.json({
       success: true,
       data: {
@@ -104,13 +96,10 @@ router.get(
     });
   })
 );
-
-// Get user profile
 router.get(
   "/:userId",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { userId } = req.params;
-
     const user = await prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -129,12 +118,9 @@ router.get(
         },
       },
     });
-
     if (!user) {
       throw createError("User not found", 404);
     }
-
-    // Check if there's an existing conversation between current user and target user
     const existingConversation = await prisma.conversation.findFirst({
       where: {
         isGroup: false,
@@ -153,7 +139,6 @@ router.get(
       },
       select: { id: true },
     });
-
     res.json({
       success: true,
       data: {
@@ -167,15 +152,11 @@ router.get(
     });
   })
 );
-
-// Update current user profile
 router.put(
   "/me",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { displayName, avatar } = req.body;
-
     const updateData: any = {};
-
     if (displayName !== undefined) {
       if (displayName && displayName.trim().length > 50) {
         throw createError(
@@ -185,20 +166,16 @@ router.put(
       }
       updateData.displayName = displayName ? displayName.trim() : null;
     }
-
     if (avatar !== undefined) {
       if (avatar && !isValidUrl(avatar)) {
         throw createError("Invalid avatar URL", 400);
       }
       updateData.avatar = avatar || null;
     }
-
     if (Object.keys(updateData).length === 0) {
       throw createError("No valid fields provided for update", 400);
     }
-
     updateData.updatedAt = new Date();
-
     const updatedUser = await prisma.user.update({
       where: { id: req.user!.id },
       data: updateData,
@@ -216,7 +193,6 @@ router.put(
         updatedAt: true,
       },
     });
-
     res.json({
       success: true,
       data: { user: updatedUser },
@@ -224,14 +200,11 @@ router.put(
     });
   })
 );
-
-// Get online users
 router.get(
   "/",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { page = 1, limit = 50 } = req.query;
     const offset = (Number(page) - 1) * Number(limit);
-
     const users = await prisma.user.findMany({
       where: {
         AND: [{ id: { not: req.user!.id } }, { isOnline: true }],
@@ -248,15 +221,12 @@ router.get(
       take: Number(limit),
       orderBy: { lastSeen: "desc" },
     });
-
     const totalOnlineUsers = await prisma.user.count({
       where: {
         AND: [{ id: { not: req.user!.id } }, { isOnline: true }],
       },
     });
-
     const totalPages = Math.ceil(totalOnlineUsers / Number(limit));
-
     res.json({
       success: true,
       data: {
@@ -273,61 +243,46 @@ router.get(
     });
   })
 );
-
-// Block/Unblock user (for future implementation)
 router.post(
   "/:userId/block",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { userId } = req.params;
-
     if (userId === req.user!.id) {
       throw createError("Cannot block yourself", 400);
     }
-
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, username: true },
     });
-
     if (!targetUser) {
       throw createError("User not found", 404);
     }
-
-    // For now, just return success (implement blocking logic later)
     res.json({
       success: true,
       message: `User ${targetUser.username} blocked successfully`,
     });
   })
 );
-
 router.delete(
   "/:userId/block",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
     const { userId } = req.params;
-
     if (userId === req.user!.id) {
       throw createError("Cannot unblock yourself", 400);
     }
-
     const targetUser = await prisma.user.findUnique({
       where: { id: userId },
       select: { id: true, username: true },
     });
-
     if (!targetUser) {
       throw createError("User not found", 404);
     }
-
-    // For now, just return success (implement blocking logic later)
     res.json({
       success: true,
       message: `User ${targetUser.username} unblocked successfully`,
     });
   })
 );
-
-// Get user statistics
 router.get(
   "/me/stats",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
@@ -347,11 +302,8 @@ router.get(
       }),
       prisma.user.count(),
     ]);
-
-    // Get messages sent today
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     const messagesToday = await prisma.message.count({
       where: {
         senderId: req.user!.id,
@@ -361,11 +313,8 @@ router.get(
         },
       },
     });
-
-    // Get active conversations (with messages in last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
     const activeConversations = await prisma.conversation.count({
       where: {
         members: {
@@ -380,7 +329,6 @@ router.get(
         },
       },
     });
-
     res.json({
       success: true,
       data: {
@@ -389,14 +337,12 @@ router.get(
           totalConversations: conversationCount,
           activeConversations,
           messagesToday,
-          totalUsers: totalUsers - 1, // Exclude current user
+          totalUsers: totalUsers - 1, 
         },
       },
     });
   })
 );
-
-// Helper function to validate URL
 function isValidUrl(string: string): boolean {
   try {
     new URL(string);
@@ -405,5 +351,4 @@ function isValidUrl(string: string): boolean {
     return false;
   }
 }
-
 export { router as userRoutes };

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
@@ -39,7 +39,6 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
 
   return (
     <div className="p-6 border-b border-white/10 rounded-2xl bg-black/50 glass-effect">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={onToggleSidebar}
@@ -56,7 +55,6 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
             <MoreHorizontal className="w-5 h-5 text-white" />
           </button>
 
-          {/* Dropdown Menu */}
           {showDropdown && (
             <div className="absolute right-0 mt-2 w-56 bg-black/50 glass-effect rounded-2xl shadow-xl border border-white/20 py-2 z-50 backdrop-blur-xl">
               <div className="px-4 py-3 border-b border-white/10">
@@ -104,7 +102,6 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
         </div>
       </div>
 
-      {/* User Info */}
       <div className="flex items-center space-x-4">
         <div className="relative">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-lg pulse-glow">

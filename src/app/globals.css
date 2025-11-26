@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -25,7 +24,6 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
   }
-
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
@@ -48,86 +46,66 @@
     --ring: 224.3 76.3% 94.1%;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
-
 @layer components {
-  /* Modern Glass Effect */
   .glass-effect {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
-
   .dark .glass-effect {
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-
-  /* Modern Gradient Backgrounds */
   .gradient-bg {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   }
-
   .gradient-bg-light {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   }
-
   .dark .gradient-bg-light {
     background: linear-gradient(135deg, #232526 0%, #414345 100%);
   }
-
-  /* Custom Scrollbar */
   .custom-scrollbar {
     scrollbar-width: thin;
     scrollbar-color: rgba(156, 163, 175, 0.6) transparent;
     scroll-behavior: smooth;
   }
-
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
-
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(45deg, #667eea, #764ba2);
     border-radius: 6px;
     transition: all 0.3s ease;
   }
-
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(45deg, #5a6fd8, #6a42a0);
     transform: scaleY(1.1);
   }
-
   .dark .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(45deg, #4f46e5, #7c3aed);
   }
-
   .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(45deg, #4338ca, #6d28d9);
   }
-
-  /* Modern Message Bubbles */
   .message-bubble-sent {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 18px 18px 6px 18px;
     position: relative;
     overflow: hidden;
   }
-
   .message-bubble-sent::before {
     content: "";
     position: absolute;
@@ -144,23 +122,18 @@
     transform: translateX(-100%);
     transition: transform 0.6s;
   }
-
   .message-bubble-sent:hover::before {
     transform: translateX(100%);
   }
-
   .message-bubble-received {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-radius: 18px 18px 18px 6px;
     border: 1px solid rgba(0, 0, 0, 0.05);
   }
-
   .dark .message-bubble-received {
     background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-
-  /* Modern Input Field */
   .modern-input {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
@@ -168,25 +141,20 @@
     border-radius: 20px;
     transition: all 0.3s ease;
   }
-
   .modern-input:focus {
     border: 2px solid #667eea;
     background: rgba(255, 255, 255, 0.2);
     box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
   }
-
   .dark .modern-input {
     background: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.1);
   }
-
   .dark .modern-input:focus {
     border: 2px solid #4f46e5;
     background: rgba(0, 0, 0, 0.4);
     box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
   }
-
-  /* Modern Button */
   .modern-btn {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 16px;
@@ -194,37 +162,28 @@
     position: relative;
     overflow: hidden;
   }
-
   .modern-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
   }
-
   .modern-btn:active {
     transform: translateY(0);
   }
-
-  /* Card Hover Effects */
   .hover-lift {
     transition: all 0.3s ease;
   }
-
   .hover-lift:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
-
   .dark .hover-lift:hover {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   }
-
-  /* Animated Background */
   .animated-bg {
     background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
     background-size: 400% 400%;
     animation: gradientShift 15s ease infinite;
   }
-
   @keyframes gradientShift {
     0% {
       background-position: 0% 50%;
@@ -236,12 +195,9 @@
       background-position: 0% 50%;
     }
   }
-
-  /* Pulse Animation */
   .pulse-glow {
     animation: pulseGlow 2s ease-in-out infinite alternate;
   }
-
   @keyframes pulseGlow {
     from {
       box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
@@ -250,8 +206,6 @@
       box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
     }
   }
-
-  /* Modern Sidebar */
   .modern-sidebar {
     background: linear-gradient(
       180deg,
@@ -261,7 +215,6 @@
     backdrop-filter: blur(20px);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
   }
-
   .dark .modern-sidebar {
     background: linear-gradient(
       180deg,

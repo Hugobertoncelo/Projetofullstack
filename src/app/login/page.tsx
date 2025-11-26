@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,24 +9,19 @@ import * as z from "zod";
 import { Eye, EyeOff, MessageCircle, Lock, Mail } from "lucide-react";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { motion } from "framer-motion";
-
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
   twoFactorCode: z.string().optional(),
 });
-
 type LoginFormData = z.infer<typeof loginSchema>;
-
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-
   const { login, isAuthenticated } = useAuth();
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -37,26 +31,21 @@ export default function LoginPage() {
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
-
   useEffect(() => {
     if (isAuthenticated) {
       router.push("/");
     }
   }, [isAuthenticated, router]);
-
   useEffect(() => {
     if (requiresTwoFactor) {
       setFocus("twoFactorCode");
     }
   }, [requiresTwoFactor, setFocus]);
-
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     setError("");
-
     try {
       const result = await login(data.email, data.password, data.twoFactorCode);
-
       if (result.success) {
         if (result.requiresTwoFactor) {
           setRequiresTwoFactor(true);
@@ -72,7 +61,6 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
-
   if (isAuthenticated) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -80,7 +68,6 @@ export default function LoginPage() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4 py-12">
       <motion.div
@@ -108,7 +95,6 @@ export default function LoginPage() {
               Inicie sessão na sua conta para continuar.
             </p>
           </div>
-
           <div className="card-content">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {error && (
@@ -120,7 +106,6 @@ export default function LoginPage() {
                   {error}
                 </motion.div>
               )}
-
               <div className="space-y-4">
                 <div>
                   <label
@@ -146,7 +131,6 @@ export default function LoginPage() {
                     </p>
                   )}
                 </div>
-
                 <div>
                   <label
                     htmlFor="password"
@@ -182,7 +166,6 @@ export default function LoginPage() {
                     </p>
                   )}
                 </div>
-
                 {requiresTwoFactor && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
@@ -212,7 +195,6 @@ export default function LoginPage() {
                   </motion.div>
                 )}
               </div>
-
               <button
                 type="submit"
                 disabled={isLoading}
@@ -229,7 +211,6 @@ export default function LoginPage() {
                   "Entrar"
                 )}
               </button>
-
               <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   Não tem uma conta?{" "}
@@ -244,7 +225,6 @@ export default function LoginPage() {
             </form>
           </div>
         </div>
-
         <div className="text-center mt-8">
           <p className="text-xs text-gray-500 dark:text-gray-400">
             Ao iniciar sessão, você concorda com os nossos termos.{" "}

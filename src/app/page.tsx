@@ -1,36 +1,30 @@
 "use client";
-
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ChatLayout from "../components/chat/ChatLayout";
 import { apiService } from "../lib/api";
-
 export default function HomePage() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const router = useRouter();
   const [showDebugLogin, setShowDebugLogin] = useState(false);
-
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      // Instead of redirecting immediately, show a login form
       setShowDebugLogin(true);
     }
   }, [isAuthenticated, isLoading, router]);
-
   const handleQuickLogin = async (email: string, password: string) => {
     try {
       const response = await apiService.login({ email, password });
       if (response.success && response.data?.token) {
         apiService.setToken(response.data.token);
-        window.location.reload(); // Force page reload to update auth state
+        window.location.reload(); 
       }
     } catch (error) {
       console.error("Login error:", error);
     }
   };
-
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -38,7 +32,6 @@ export default function HomePage() {
       </div>
     );
   }
-
   if (!isAuthenticated && showDebugLogin) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-gray-50">
@@ -88,10 +81,8 @@ export default function HomePage() {
       </div>
     );
   }
-
   if (!isAuthenticated) {
     return null;
   }
-
   return <ChatLayout />;
 }

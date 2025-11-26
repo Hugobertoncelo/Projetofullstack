@@ -4,14 +4,11 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { ApiResponse } from "../types";
-
 class ApiService {
   private client: AxiosInstance;
-  private token: string | null = null;
-  constructor() {
+  private token: string | null = null;  constructor() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     const baseURL = `${apiUrl}/api`;
-
     this.client = axios.create({
       baseURL: baseURL,
       timeout: 10000,
@@ -19,12 +16,9 @@ class ApiService {
         "Content-Type": "application/json",
       },
     });
-
     this.setupInterceptors();
   }
-
   private setupInterceptors(): void {
-    // Request interceptor to add auth token
     this.client.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         if (this.token) {
@@ -36,8 +30,6 @@ class ApiService {
         return Promise.reject(error);
       }
     );
-
-    // Response interceptor to handle errors
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
         return response;
@@ -45,30 +37,26 @@ class ApiService {
       (error) => {
         if (error.response?.status === 401) {
           this.clearToken();
-          // Redirect to login or emit auth error event
           window.location.href = "/login";
         }
         return Promise.reject(error);
       }
     );
   }
-
   setToken(token: string): void {
     this.token = token;
     localStorage.setItem("token", token);
   }
-
   clearToken(): void {
     this.token = null;
     localStorage.removeItem("token");
   }
-
   getToken(): string | null {
     if (!this.token) {
       this.token = localStorage.getItem("token");
     }
     return this.token;
-  } // Auth endpoints
+  } 
   async register(data: {
     email: string;
     username: string;
@@ -78,7 +66,6 @@ class ApiService {
     const response = await this.client.post("/auth/register", data);
     return response.data;
   }
-
   async login(data: {
     email: string;
     password: string;
@@ -87,27 +74,22 @@ class ApiService {
     const response = await this.client.post("/auth/login", data);
     return response.data;
   }
-
   async logout(): Promise<ApiResponse> {
     const response = await this.client.post("/auth/logout");
     return response.data;
   }
-
   async getCurrentUser(): Promise<ApiResponse> {
     const response = await this.client.get("/auth/me");
     return response.data;
   }
-
   async setup2FA(): Promise<ApiResponse> {
     const response = await this.client.post("/auth/setup-2fa");
     return response.data;
   }
-
   async verify2FA(code: string): Promise<ApiResponse> {
     const response = await this.client.post("/auth/verify-2fa", { code });
     return response.data;
   }
-
   async disable2FA(password: string, code: string): Promise<ApiResponse> {
     const response = await this.client.post("/auth/disable-2fa", {
       password,
@@ -115,7 +97,6 @@ class ApiService {
     });
     return response.data;
   }
-
   async changePassword(
     currentPassword: string,
     newPassword: string
@@ -126,20 +107,16 @@ class ApiService {
     });
     return response.data;
   }
-
-  // User endpoints
   async searchUsers(query: string, page = 1, limit = 20): Promise<ApiResponse> {
     const response = await this.client.get("/users/search", {
       params: { query, page, limit },
     });
     return response.data;
   }
-
   async getUserProfile(userId: string): Promise<ApiResponse> {
     const response = await this.client.get(`/users/${userId}`);
     return response.data;
   }
-
   async updateProfile(data: {
     displayName?: string;
     avatar?: string;
@@ -147,49 +124,40 @@ class ApiService {
     const response = await this.client.put("/users/me", data);
     return response.data;
   }
-
   async getOnlineUsers(page = 1, limit = 50): Promise<ApiResponse> {
     const response = await this.client.get("/users", {
       params: { page, limit },
     });
     return response.data;
   }
-
   async getUserStats(): Promise<ApiResponse> {
     const response = await this.client.get("/users/me/stats");
     return response.data;
   }
-
   async blockUser(userId: string): Promise<ApiResponse> {
     const response = await this.client.post(`/users/${userId}/block`);
     return response.data;
   }
-
   async unblockUser(userId: string): Promise<ApiResponse> {
     const response = await this.client.delete(`/users/${userId}/block`);
     return response.data;
   }
-
-  // Conversation endpoints
   async getConversations(page = 1, limit = 20): Promise<ApiResponse> {
     const response = await this.client.get("/conversations", {
       params: { page, limit },
     });
     return response.data;
   }
-
   async getConversation(conversationId: string): Promise<ApiResponse> {
     const response = await this.client.get(`/conversations/${conversationId}`);
     return response.data;
   }
-
   async createDirectConversation(userId: string): Promise<ApiResponse> {
     const response = await this.client.post("/conversations/direct", {
       userId,
     });
     return response.data;
   }
-
   async createGroupConversation(
     name: string,
     userIds: string[]
@@ -200,7 +168,6 @@ class ApiService {
     });
     return response.data;
   }
-
   async addMembersToGroup(
     conversationId: string,
     userIds: string[]
@@ -211,7 +178,6 @@ class ApiService {
     );
     return response.data;
   }
-
   async removeMemberFromGroup(
     conversationId: string,
     userId: string
@@ -221,7 +187,6 @@ class ApiService {
     );
     return response.data;
   }
-
   async updateGroupInfo(
     conversationId: string,
     name: string
@@ -231,14 +196,12 @@ class ApiService {
     });
     return response.data;
   }
-
   async leaveConversation(conversationId: string): Promise<ApiResponse> {
     const response = await this.client.delete(
       `/conversations/${conversationId}`
     );
     return response.data;
   }
-  // Message endpoints
   async getMessages(
     conversationId: string,
     page = 1,
@@ -252,7 +215,6 @@ class ApiService {
     );
     return response.data;
   }
-
   async sendMessage(
     conversationId: string,
     data: {
@@ -267,7 +229,6 @@ class ApiService {
     );
     return response.data;
   }
-
   async searchMessages(
     query: string,
     conversationId?: string,
@@ -279,27 +240,22 @@ class ApiService {
     });
     return response.data;
   }
-
   async editMessage(messageId: string, content: string): Promise<ApiResponse> {
     const response = await this.client.put(`/messages/${messageId}`, {
       content,
     });
     return response.data;
   }
-
   async deleteMessage(messageId: string): Promise<ApiResponse> {
     const response = await this.client.delete(`/messages/${messageId}`);
     return response.data;
   }
-
   async getTypingIndicators(conversationId: string): Promise<ApiResponse> {
     const response = await this.client.get(
       `/messages/conversation/${conversationId}/typing`
     );
     return response.data;
   }
-
-  // Generic request method
   async request(
     method: string,
     url: string,
@@ -315,10 +271,7 @@ class ApiService {
     return response.data;
   }
 }
-
 export const apiService = new ApiService();
-
-// Initialize token from localStorage on app start
 if (typeof window !== "undefined") {
   const token = localStorage.getItem("token");
   if (token) {
