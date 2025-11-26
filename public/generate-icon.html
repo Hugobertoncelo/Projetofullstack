@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Generate PWA Icon</title>
+  </head>
+  <body>
+    <canvas
+      id="canvas"
+      width="192"
+      height="192"
+      style="border: 1px solid black"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+
+      // Background
+      ctx.fillStyle = "#3b82f6";
+      ctx.fillRect(0, 0, 192, 192);
+
+      // Chat bubble
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.roundRect(40, 50, 100, 60, 15);
+      ctx.fill();
+
+      // Message lines
+      ctx.fillStyle = "#3b82f6";
+      ctx.fillRect(50, 65, 60, 4);
+      ctx.fillRect(50, 75, 80, 4);
+      ctx.fillRect(50, 85, 40, 4);
+
+      console.log("Icon generated - right-click canvas to save as PNG");
+    </script>
+  </body>
+</html>

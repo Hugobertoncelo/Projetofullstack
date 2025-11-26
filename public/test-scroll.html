@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste de Scroll - Chat</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        cursor: pointer;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+      .info {
+        color: blue;
+      }
+      .log {
+        background: #f5f5f5;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🧪 Teste de Scroll - Chat</h1>
+
+    <div>
+      <h3>1. Login de Teste</h3>
+      <button onclick="loginTest()">Login como alice</button>
+      <button onclick="loginTest2()">Login como testuser</button>
+    </div>
+
+    <div>
+      <h3>2. Adicionar Mensagens</h3>
+      <input
+        type="text"
+        id="conversationId"
+        placeholder="ID da Conversa"
+        style="width: 300px"
+      />
+      <br /><br />
+      <button onclick="addTestMessages()">Adicionar 20 Mensagens</button>
+      <button onclick="addLotsOfMessages()">Adicionar 50 Mensagens</button>
+    </div>
+
+    <div>
+      <h3>3. Teste de Scroll</h3>
+      <button onclick="testScrollFunction()">Testar Scroll no Chat</button>
+    </div>
+
+    <div id="log" class="log">
+      <p>📋 Logs aparecerão aqui...</p>
+    </div>
+
+    <script>
+      let authToken = "";
+
+      function log(message, type = "info") {
+        const logDiv = document.getElementById("log");
+        const timestamp = new Date().toLocaleTimeString();
+        const className =
+          type === "success" ? "success" : type === "error" ? "error" : "info";
+        logDiv.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        logDiv.scrollTop = logDiv.scrollHeight;
+        console.log(`[${timestamp}] ${message}`);
+      }
+
+      async function loginTest() {
+        try {
+          const response = await fetch("http://localhost:3001/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: "alice@example.com",
+              password: "AlicePassword123!",
+            }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            authToken = data.data.token;
+            log("✅ Login realizado com sucesso como alice", "success");
+          } else {
+            log("❌ Erro no login: " + data.error, "error");
+          }
+        } catch (error) {
+          log("❌ Erro de conexão: " + error.message, "error");
+        }
+      }
+
+      async function loginTest2() {
+        try {
+          const response = await fetch("http://localhost:3001/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: "test@example.com",
+              password: "TestPassword123!",
+            }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            authToken = data.data.token;
+            log("✅ Login realizado com sucesso como testuser", "success");
+          } else {
+            log("❌ Erro no login: " + data.error, "error");
+          }
+        } catch (error) {
+          log("❌ Erro de conexão: " + error.message, "error");
+        }
+      }
+
+      async function addTestMessages() {
+        const conversationId = document.getElementById("conversationId").value;
+        if (!conversationId) {
+          log("❌ Por favor, insira o ID da conversa", "error");
+          return;
+        }
+
+        if (!authToken) {
+          log("❌ Faça login primeiro", "error");
+          return;
+        }
+
+        log("🚀 Adicionando 20 mensagens de teste...");
+
+        for (let i = 1; i <= 20; i++) {
+          try {
+            const response = await fetch("http://localhost:3001/api/messages", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+              },
+              body: JSON.stringify({
+                conversationId: conversationId,
+                content: `Mensagem de teste número ${i} para verificar o funcionamento do scroll. Esta é uma mensagem mais longa para simular conteúdo real.`,
+              }),
+            });
+
+            if (response.ok) {
+              log(`✅ Mensagem ${i}/20 adicionada`, "success");
+            } else {
+              const error = await response.json();
+              log(`❌ Erro na mensagem ${i}: ${error.error}`, "error");
+            }
+
+            // Pequena pausa entre mensagens
+            await new Promise((resolve) => setTimeout(resolve, 100));
+          } catch (error) {
+            log(`❌ Erro na mensagem ${i}: ${error.message}`, "error");
+          }
+        }
+
+        log("🎉 Teste de mensagens concluído!", "success");
+      }
+
+      async function addLotsOfMessages() {
+        const conversationId = document.getElementById("conversationId").value;
+        if (!conversationId) {
+          log("❌ Por favor, insira o ID da conversa", "error");
+          return;
+        }
+
+        if (!authToken) {
+          log("❌ Faça login primeiro", "error");
+          return;
+        }
+
+        log("🚀 Adicionando 50 mensagens para teste de scroll...");
+
+        for (let i = 1; i <= 50; i++) {
+          try {
+            const messages = [
+              `Esta é a mensagem ${i} de um total de 50 mensagens.`,
+              `Testando scroll com mensagem número ${i}. O scroll deve funcionar perfeitamente.`,
+              `Mensagem ${i}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+              `Verificando funcionalidade de scroll - Mensagem ${i}/50`,
+              `Scroll test message ${i} - Esta mensagem é para verificar se o scroll está funcionando corretamente na área de chat.`,
+            ];
+
+            const content = messages[i % messages.length];
+
+            const response = await fetch("http://localhost:3001/api/messages", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${authToken}`,
+              },
+              body: JSON.stringify({
+                conversationId: conversationId,
+                content: content,
+              }),
+            });
+
+            if (response.ok) {
+              if (i % 10 === 0)
+                log(`✅ ${i}/50 mensagens adicionadas`, "success");
+            }
+
+            // Pausa menor para 50 mensagens
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          } catch (error) {
+            log(`❌ Erro na mensagem ${i}: ${error.message}`, "error");
+          }
+        }
+
+        log(
+          "🎉 50 mensagens adicionadas! Teste o scroll no chat agora.",
+          "success"
+        );
+      }
+
+      function testScrollFunction() {
+        log("🧪 Abrindo console do chat para teste de scroll...");
+        log("📋 Copie e cole este código no console do chat:", "info");
+        log(
+          `
+// Teste de scroll
+const messagesArea = document.querySelector('[style*="calc(100vh - 140px)"]');
+if (messagesArea) {
+    console.log('✅ Área encontrada');
+    console.log('Height:', messagesArea.scrollHeight, 'px');
+    console.log('Visible:', messagesArea.clientHeight, 'px');
+    console.log('Scrollable:', messagesArea.scrollHeight > messagesArea.clientHeight);
+    
+    // Teste de scroll
+    messagesArea.scrollTop = 0;
+    setTimeout(() => messagesArea.scrollTop = messagesArea.scrollHeight/2, 1000);
+    setTimeout(() => messagesArea.scrollTop = messagesArea.scrollHeight, 2000);
+} else {
+    console.log('❌ Área de mensagens não encontrada');
+}
+            `.trim()
+        );
+      }
+    </script>
+  </body>
+</html>
