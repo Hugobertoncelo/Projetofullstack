@@ -169,7 +169,7 @@ router.put(
     }
     const now = new Date();
     const messageAge = now.getTime() - message.createdAt.getTime();
-    const maxAge = 24 * 60 * 60 * 1000; 
+    const maxAge = 24 * 60 * 60 * 1000;
     if (messageAge > maxAge) {
       throw createError("Cannot edit messages older than 24 hours", 400);
     }

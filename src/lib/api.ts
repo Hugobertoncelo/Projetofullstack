@@ -6,7 +6,8 @@ import axios, {
 import { ApiResponse } from "../types";
 class ApiService {
   private client: AxiosInstance;
-  private token: string | null = null;  constructor() {
+  private token: string | null = null;
+  constructor() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
     const baseURL = `${apiUrl}/api`;
     this.client = axios.create({
@@ -56,7 +57,7 @@ class ApiService {
       this.token = localStorage.getItem("token");
     }
     return this.token;
-  } 
+  }
   async register(data: {
     email: string;
     username: string;

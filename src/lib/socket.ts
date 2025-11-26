@@ -5,7 +5,7 @@ class SocketService {
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
-  private messageListeners = new Map<Function, (...args: any[]) => void>(); 
+  private messageListeners = new Map<Function, (...args: any[]) => void>();
   connect(token: string): void {
     console.log(
       "🔌 Socket.connect called with token:",
@@ -15,7 +15,8 @@ class SocketService {
       console.log("🔌 Socket already connected, skipping");
       return;
     }
-    console.log("🔌 Creating new socket connection...");    this.socket = io(
+    console.log("🔌 Creating new socket connection...");
+    this.socket = io(
       process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:3001",
       {
         auth: {
@@ -94,7 +95,7 @@ class SocketService {
     } else {
       console.log("⚠️ No matching listener found to remove");
     }
-  } 
+  }
   joinConversation(conversationId: string): void {
     console.log("🔌 Socket.joinConversation called:", conversationId);
     this.socket?.emit("join_conversation", conversationId);
