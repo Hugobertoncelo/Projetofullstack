@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   app:
@@ -21,7 +21,7 @@ services:
       - chatapp_network
 
   server:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.server
     container_name: chatapp_server

@@ -46,10 +46,10 @@ export interface TypingIndicator {
 }
 
 export enum MessageType {
-  TEXT = 'TEXT',
-  IMAGE = 'IMAGE',
-  FILE = 'FILE',
-  SYSTEM = 'SYSTEM'
+  TEXT = "TEXT",
+  IMAGE = "IMAGE",
+  FILE = "FILE",
+  SYSTEM = "SYSTEM",
 }
 
 export interface AuthUser {
@@ -100,7 +100,7 @@ export interface PaginatedResponse<T> {
 
 export interface SearchParams {
   query: string;
-  type?: 'messages' | 'users' | 'conversations';
+  type?: "messages" | "users" | "conversations";
   conversationId?: string;
 }
 
@@ -108,14 +108,23 @@ export interface SocketEvents {
   // Client to server events
   join_conversation: (conversationId: string) => void;
   leave_conversation: (conversationId: string) => void;
-  send_message: (message: Omit<Message, 'id' | 'createdAt' | 'updatedAt' | 'sender'>) => void;
+  send_message: (
+    message: Omit<Message, "id" | "createdAt" | "updatedAt" | "sender">
+  ) => void;
   start_typing: (conversationId: string) => void;
   stop_typing: (conversationId: string) => void;
-  
+
   // Server to client events
   message_received: (message: Message) => void;
-  user_typing: (data: { userId: string; conversationId: string; username: string }) => void;
-  user_stopped_typing: (data: { userId: string; conversationId: string }) => void;
+  user_typing: (data: {
+    userId: string;
+    conversationId: string;
+    username: string;
+  }) => void;
+  user_stopped_typing: (data: {
+    userId: string;
+    conversationId: string;
+  }) => void;
   user_online: (userId: string) => void;
   user_offline: (userId: string) => void;
   conversation_updated: (conversation: Conversation) => void;

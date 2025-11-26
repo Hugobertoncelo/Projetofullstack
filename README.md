@@ -5,6 +5,7 @@ A complete, production-ready real-time chat application built with modern web te
 ## Features
 
 ### Core Functionality
+
 - **Real-time messaging** with Socket.io
 - **User authentication** with JWT and 2FA
 - **Direct messages** and **group chats**
@@ -14,6 +15,7 @@ A complete, production-ready real-time chat application built with modern web te
 - **Message search** functionality
 
 ### Security & Performance
+
 - **End-to-end message encryption**
 - **Rate limiting** and **input sanitization**
 - **Redis caching** for optimal performance
@@ -21,6 +23,7 @@ A complete, production-ready real-time chat application built with modern web te
 - **Responsive design** with mobile-first approach
 
 ### Advanced Features
+
 - **Dark/Light theme** support
 - **File sharing** capabilities
 - **Message reactions** and replies
@@ -30,6 +33,7 @@ A complete, production-ready real-time chat application built with modern web te
 ## Tech Stack
 
 ### Frontend
+
 - **Next.js 14** with App Router
 - **TypeScript** for type safety
 - **Tailwind CSS** for styling
@@ -37,6 +41,7 @@ A complete, production-ready real-time chat application built with modern web te
 - **Socket.io Client** for real-time communication
 
 ### Backend
+
 - **Node.js** with Express
 - **TypeScript** throughout
 - **Socket.io** server for WebSocket connections
@@ -45,6 +50,7 @@ A complete, production-ready real-time chat application built with modern web te
 - **Redis** for caching and session management
 
 ### Infrastructure
+
 - **Docker** for containerization
 - **Docker Compose** for development environment
 - **Nginx** for production reverse proxy
@@ -53,41 +59,48 @@ A complete, production-ready real-time chat application built with modern web te
 ## Quick Start
 
 ### Prerequisites
-- Node.js 18+ 
+
+- Node.js 18+
 - Docker and Docker Compose
 - Git
 
 ### Development Setup
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd realtime-chat-system
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Start infrastructure services**
+
 ```bash
 npm run docker:up
 ```
 
 4. **Configure environment variables**
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 5. **Setup database**
+
 ```bash
 npm run db:generate
 npm run db:migrate
 ```
 
 6. **Start development servers**
+
 ```bash
 # Terminal 1 - Frontend
 npm run dev
@@ -97,6 +110,7 @@ npm run server:dev
 ```
 
 The application will be available at:
+
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
 - PostgreSQL: localhost:5432
@@ -105,12 +119,13 @@ The application will be available at:
 ### Production Deployment
 
 1. **Build and start with Docker Compose**
+
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
 2. **Environment Variables**
-Ensure all production environment variables are properly set in your deployment environment.
+   Ensure all production environment variables are properly set in your deployment environment.
 
 ## Environment Variables
 
@@ -155,18 +170,21 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 ## Available Scripts
 
 ### Development
+
 - `npm run dev` - Start Next.js development server
 - `npm run server:dev` - Start backend server in development mode
 - `npm run docker:up` - Start development infrastructure
 - `npm run docker:down` - Stop development infrastructure
 
 ### Database
+
 - `npm run db:generate` - Generate Prisma client
 - `npm run db:migrate` - Run database migrations
 - `npm run db:push` - Push schema changes to database
 - `npm run db:studio` - Open Prisma Studio
 
 ### Production
+
 - `npm run build` - Build the application
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
@@ -177,6 +195,7 @@ NEXT_PUBLIC_API_URL="http://localhost:3001"
 The REST API provides endpoints for:
 
 ### Authentication (`/api/auth`)
+
 - `POST /register` - User registration
 - `POST /login` - User login
 - `POST /logout` - User logout
@@ -184,17 +203,20 @@ The REST API provides endpoints for:
 - `POST /setup-2fa` - Setup two-factor authentication
 
 ### Users (`/api/users`)
+
 - `GET /search` - Search users
 - `GET /:userId` - Get user profile
 - `PUT /me` - Update current user profile
 
 ### Conversations (`/api/conversations`)
+
 - `GET /` - Get user conversations
 - `POST /direct` - Create direct conversation
 - `POST /group` - Create group conversation
 - `GET /:id` - Get conversation details
 
 ### Messages (`/api/messages`)
+
 - `GET /conversation/:id` - Get conversation messages
 - `GET /search` - Search messages
 - `PUT /:id` - Edit message
@@ -205,6 +227,7 @@ The REST API provides endpoints for:
 The Socket.io implementation handles:
 
 ### Client to Server
+
 - `join_conversation` - Join a conversation room
 - `leave_conversation` - Leave a conversation room
 - `send_message` - Send a new message
@@ -212,6 +235,7 @@ The Socket.io implementation handles:
 - `stop_typing` - Stop typing indicator
 
 ### Server to Client
+
 - `message_received` - New message received
 - `user_typing` - User started typing
 - `user_stopped_typing` - User stopped typing
@@ -254,6 +278,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support
 
 For support and questions:
+
 - Open an issue on GitHub
 - Check the documentation
 - Review the code examples in the repository

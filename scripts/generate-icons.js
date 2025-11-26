@@ -28,7 +28,7 @@ function generateSimpleIcon(size) {
       <circle cx="${size * 0.84375}" cy="${size * 0.28125}" r="${size * 0.0234375}" fill="white"/>
     </svg>
   `;
-  
+
   return canvas;
 }
 

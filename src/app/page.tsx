@@ -1,42 +1,42 @@
-'use client'
+"use client";
 
-import { useAuth } from '../hooks/useAuth'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import LoadingSpinner from '../components/LoadingSpinner'
-import ChatLayout from '../components/chat/ChatLayout'
-import { apiService } from '../lib/api'
+import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LoadingSpinner from "../components/LoadingSpinner";
+import ChatLayout from "../components/chat/ChatLayout";
+import { apiService } from "../lib/api";
 
 export default function HomePage() {
-  const { isAuthenticated, isLoading, user } = useAuth()
-  const router = useRouter()
-  const [showDebugLogin, setShowDebugLogin] = useState(false)
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const router = useRouter();
+  const [showDebugLogin, setShowDebugLogin] = useState(false);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       // Instead of redirecting immediately, show a login form
-      setShowDebugLogin(true)
+      setShowDebugLogin(true);
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   const handleQuickLogin = async (email: string, password: string) => {
     try {
-      const response = await apiService.login({ email, password })
+      const response = await apiService.login({ email, password });
       if (response.success && response.data?.token) {
-        apiService.setToken(response.data.token)
-        window.location.reload() // Force page reload to update auth state
+        apiService.setToken(response.data.token);
+        window.location.reload(); // Force page reload to update auth state
       }
     } catch (error) {
-      console.error('Login error:', error)
+      console.error("Login error:", error);
     }
-  }
+  };
 
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated && showDebugLogin) {
@@ -46,25 +46,34 @@ export default function HomePage() {
           <h1 className="text-2xl font-bold mb-6 text-center">Chat Login</h1>
           <div className="space-y-4">
             <button
-              onClick={() => handleQuickLogin('test@example.com', 'TestPassword123!')}
+              onClick={() =>
+                handleQuickLogin("test@example.com", "TestPassword123!")
+              }
               className="w-full px-4 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
             >
               Login as testuser
             </button>
             <button
-              onClick={() => handleQuickLogin('alice@example.com', 'AlicePassword123!')}
+              onClick={() =>
+                handleQuickLogin("alice@example.com", "AlicePassword123!")
+              }
               className="w-full px-4 py-3 bg-green-500 text-white rounded hover:bg-green-600 transition"
             >
               Login as alice
             </button>
             <button
-              onClick={() => handleQuickLogin('frontend-test@example.com', 'FrontendTest123!')}
+              onClick={() =>
+                handleQuickLogin(
+                  "frontend-test@example.com",
+                  "FrontendTest123!"
+                )
+              }
               className="w-full px-4 py-3 bg-purple-500 text-white rounded hover:bg-purple-600 transition"
             >
               Login as frontenduser
             </button>
             <button
-              onClick={() => router.push('/login')}
+              onClick={() => router.push("/login")}
               className="w-full px-4 py-3 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
             >
               Go to Login Page
@@ -77,12 +86,12 @@ export default function HomePage() {
           )}
         </div>
       </div>
-    )
+    );
   }
 
   if (!isAuthenticated) {
-    return null
+    return null;
   }
 
-  return <ChatLayout />
+  return <ChatLayout />;
 }

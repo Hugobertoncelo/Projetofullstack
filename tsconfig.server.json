@@ -9,6 +9,11 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": false
   },
-  "include": ["src/server/**/*"],
-  "exclude": ["src/app/**/*", "src/components/**/*"]
+  "include": [
+    "src/server/**/*"
+  ],
+  "exclude": [
+    "src/app/**/*",
+    "src/components/**/*"
+  ]
 }

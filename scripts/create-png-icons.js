@@ -20,7 +20,7 @@ fs.writeFileSync(
 );
 
 fs.writeFileSync(
-  path.join(publicDir, 'icon-512x512.png'), 
+  path.join(publicDir, 'icon-512x512.png'),
   Buffer.from(icon512Base64, 'base64')
 );
 

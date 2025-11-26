@@ -1,5 +1,5 @@
-import { Server, Socket } from 'socket.io';
-import { User } from '@prisma/client';
+import { Server, Socket } from "socket.io";
+import { User } from "@prisma/client";
 
 export interface SocketWithUser extends Socket {
   userId?: number;
