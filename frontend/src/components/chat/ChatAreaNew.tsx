@@ -78,22 +78,30 @@ export default function ChatArea({
     } finally {
       setIsLoading(false);
     }
-  };
-  const handleSendMessage = async () => {
+  };  const handleSendMessage = async () => {
     if (!newMessage.trim() || !conversation?.id) return;
     const messageContent = newMessage.trim();
     setNewMessage("");
     try {
+      console.log('Sending message:', { conversationId: conversation.id, content: messageContent });
+      
       const response = await apiService.sendMessage(conversation.id, {
         content: messageContent,
         type: "TEXT",
       });
+      
+      console.log('Message response:', response);
+      
       if (!response.success) {
+        console.error('Message send failed:', response);
         setNewMessage(messageContent);
       }
     } catch (error) {
       console.error("Error sending message:", error);
       setNewMessage(messageContent);
+      
+      // Show user-friendly error
+      alert('Erro ao enviar mensagem. Tente novamente.');
     }
   };
   const handleKeyPress = (e: React.KeyboardEvent) => {

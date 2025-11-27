@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../src/hooks/useAuth";
 import { ThemeProvider } from "../src/components/ThemeProvider";
+import ErrorBoundary from "../src/components/ErrorBoundary";
 const inter = Inter({ subsets: ["latin"] });
 export const viewport: Viewport = {
   width: "device-width",
@@ -53,18 +54,19 @@ export default function RootLayout({
       </head>{" "}
       <body
         className={`${inter.className} antialiased min-h-screen bg-background`}
-      >
-        <ThemeProvider
+      >        <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <div className="flex min-h-screen flex-col">
-              <main className="flex-1">{children}</main>
-            </div>
-          </AuthProvider>
+          <ErrorBoundary>
+            <AuthProvider>
+              <div className="flex min-h-screen flex-col">
+                <main className="flex-1">{children}</main>
+              </div>
+            </AuthProvider>
+          </ErrorBoundary>
         </ThemeProvider>
       </body>
     </html>
