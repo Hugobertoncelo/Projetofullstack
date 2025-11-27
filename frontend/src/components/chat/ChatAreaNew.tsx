@@ -50,14 +50,22 @@ export default function ChatArea({
       socketService.offMessageReceived(handleNewMessage);
     };
   }, [conversation?.id, user?.id]);
+  const getOtherUser = (conversation: Conversation) => {
+    if (!conversation.members || !user?.id) return null;
+    return conversation.members.find((m) => m.id !== user.id) || null;
+  };
   const getConversationName = (conversation: Conversation) => {
     if (conversation.name) return conversation.name;
     if (conversation.isGroup) return "Group Chat";
-    const otherMembers = conversation.members?.filter((m) => m.id !== user?.id);
-    if (otherMembers?.length === 1) {
-      return otherMembers[0].username;
-    }
+    const other = getOtherUser(conversation);
+    if (other) return other.displayName || other.username;
     return "Chat";
+  };
+  const getConversationInitials = (conversation: Conversation) => {
+    if (conversation.isGroup) return "";
+    const other = getOtherUser(conversation);
+    if (other) return getInitials(other.displayName || other.username);
+    return "?";
   };
   useEffect(() => {
     if (conversation?.id) {
@@ -144,7 +152,7 @@ export default function ChatArea({
               {conversation.isGroup ? (
                 <Users className="w-6 h-6" />
               ) : (
-                getInitials(getConversationName(conversation))
+                getConversationInitials(conversation)
               )}
             </div>
             {!conversation.isGroup && (
@@ -204,13 +212,18 @@ export default function ChatArea({
                     >
                       {!isOwn && (
                         <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 pulse-glow">
-                          {getInitials(message.sender?.username || "U")}
+                          {getInitials(
+                            message.sender?.displayName ||
+                              message.sender?.username ||
+                              "U"
+                          )}
                         </div>
                       )}{" "}
                       <div className="flex flex-col space-y-1">
                         {!isOwn && (
                           <p className="text-xs text-white/70 font-medium px-1">
-                            {message.sender?.username}
+                            {message.sender?.displayName ||
+                              message.sender?.username}
                           </p>
                         )}
                         <div
