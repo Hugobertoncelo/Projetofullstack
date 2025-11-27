@@ -61,7 +61,7 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
                 className="absolute inset-0 bg-black/60"
                 onClick={() => setShowDropdown(false)}
               />
-              <div className="relative w-72 max-w-full bg-gray-900/95 dark:bg-gray-900/95 glass-effect rounded-2xl shadow-2xl border border-white/20 py-2 backdrop-blur-xl flex flex-col">
+              <div className="relative w-72 max-w-full bg-gray-900/95 dark:bg-gray-900/95 glass-effect rounded-2xl shadow-2xl border border-white/20 py-2 backdrop-blur-xl flex flex-col animate-fadeInScale">
                 <button
                   className="absolute top-2 right-2 p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
                   onClick={() => setShowDropdown(false)}
