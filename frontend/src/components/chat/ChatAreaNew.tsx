@@ -138,46 +138,46 @@ export default function ChatArea({
     );
   }
   return (
-    <div className="flex-1 flex flex-col glass-effect h-full">
-      <div className="flex items-center justify-between p-6 border-b border-white/10 flex-shrink-0">
+    <div className="flex-1 flex flex-col h-full bg-gradient-to-br from-blue-50 via-purple-100 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-500">
+      <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 shadow-md rounded-b-3xl mb-2">
         <div className="flex items-center space-x-4">
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-3 hover:bg-white/20 rounded-xl transition-all duration-300 hover:scale-110"
+            className="lg:hidden p-3 hover:bg-purple-100 dark:hover:bg-gray-800 rounded-xl transition-all duration-300 hover:scale-110 shadow-md"
           >
-            <Menu className="w-6 h-6 text-white" />
+            <Menu className="w-6 h-6 text-purple-600 dark:text-purple-300" />
           </button>
           <div className="relative">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold pulse-glow">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-xl shadow-lg">
               {conversation.isGroup ? (
-                <Users className="w-6 h-6" />
+                <Users className="w-7 h-7" />
               ) : (
                 getConversationInitials(conversation)
               )}
             </div>
             {!conversation.isGroup && (
-              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white/20 pulse-glow"></div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white shadow-md"></div>
             )}
           </div>
           <div>
-            <h2 className="font-bold text-white text-xl">
+            <h2 className="font-bold text-gray-900 dark:text-white text-2xl">
               {getConversationName(conversation)}
             </h2>
             {conversation.isGroup && conversation.members && (
-              <p className="text-white/60 text-sm">
-                {conversation.members.length} members
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                {conversation.members.length} membros
               </p>
             )}
             {!conversation.isGroup && (
-              <p className="text-green-400 text-sm font-medium">Online</p>
-            )}{" "}
+              <p className="text-green-500 text-sm font-medium">Online</p>
+            )}
           </div>
         </div>
       </div>
-      <div className="flex-1 flex flex-col min-h-0">
+      <div className="flex-1 flex flex-col min-h-0 px-2 md:px-8 pb-4">
         <div
-          className="flex-1 overflow-y-scroll p-6 custom-scrollbar"
-          style={{ maxHeight: "calc(100vh - 200px)" }}
+          className="flex-1 overflow-y-scroll p-4 md:p-8 custom-scrollbar rounded-3xl bg-white/70 dark:bg-gray-900/70 shadow-inner"
+          style={{ maxHeight: "calc(100vh - 220px)" }}
         >
           {isLoading ? (
             <div className="flex justify-center py-12">
@@ -187,9 +187,11 @@ export default function ChatArea({
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="glass-effect rounded-3xl p-8 max-w-md">
                 <MessageCircle className="w-16 h-16 text-purple-300 mx-auto mb-4 pulse-glow" />
-                <p className="text-white/80 text-lg mb-2">No messages yet</p>
-                <p className="text-white/50 text-sm">
-                  Send a message to start the conversation
+                <p className="text-gray-700 dark:text-white/80 text-lg mb-2">
+                  Nenhuma mensagem ainda
+                </p>
+                <p className="text-gray-400 dark:text-white/50 text-sm">
+                  Envie uma mensagem para iniciar a conversa.
                 </p>
               </div>
             </div>
@@ -197,7 +199,6 @@ export default function ChatArea({
             <div className="space-y-6">
               {messages.map((message) => {
                 const isOwn = String(message.senderId) === String(user?.id);
-
                 return (
                   <div
                     key={message.id}
@@ -211,26 +212,26 @@ export default function ChatArea({
                       }`}
                     >
                       {!isOwn && (
-                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 pulse-glow">
+                        <div className="w-10 h-10 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-base font-bold flex-shrink-0 shadow-md">
                           {getInitials(
                             message.sender?.displayName ||
                               message.sender?.username ||
                               "U"
                           )}
                         </div>
-                      )}{" "}
+                      )}
                       <div className="flex flex-col space-y-1">
                         {!isOwn && (
-                          <p className="text-xs text-white/70 font-medium px-1">
+                          <p className="text-xs text-gray-600 dark:text-gray-300 font-medium px-1">
                             {message.sender?.displayName ||
                               message.sender?.username}
                           </p>
                         )}
                         <div
-                          className={`px-6 py-4 rounded-3xl backdrop-blur-lg transition-all duration-300 hover:scale-105 ${
+                          className={`px-6 py-4 rounded-3xl transition-all duration-300 hover:scale-105 shadow-md ${
                             isOwn
-                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/25 message-bubble-shine"
-                              : "glass-effect text-white border border-white/10 shadow-lg"
+                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white message-bubble-shine"
+                              : "bg-white/90 dark:bg-gray-800/80 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700"
                           }`}
                         >
                           <p className="text-sm break-words whitespace-pre-wrap leading-relaxed">
@@ -241,7 +242,9 @@ export default function ChatArea({
                           className={`text-xs ${
                             isOwn ? "text-right" : "text-left"
                           } px-2 ${
-                            isOwn ? "text-purple-200" : "text-white/50"
+                            isOwn
+                              ? "text-purple-400"
+                              : "text-gray-400 dark:text-gray-500"
                           }`}
                         >
                           {new Date(message.createdAt).toLocaleTimeString([], {
@@ -256,10 +259,10 @@ export default function ChatArea({
               })}
               <div ref={messagesEndRef} />
             </div>
-          )}{" "}
+          )}
         </div>
-      </div>{" "}
-      <div className="p-6 border-t border-white/10 backdrop-blur-lg flex-shrink-0">
+      </div>
+      <div className="p-4 md:p-8 border-t border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 rounded-t-3xl shadow-lg">
         <div className="flex space-x-4 items-end">
           <div className="flex-1 relative">
             <input
@@ -268,13 +271,13 @@ export default function ChatArea({
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Digite sua mensagem..."
-              className="w-full px-6 py-4 glass-effect border border-white/20 rounded-3xl text-white placeholder-white/50 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all duration-300 text-sm resize-none custom-scrollbar"
+              className="w-full px-6 py-4 glass-effect border border-gray-300 dark:border-gray-700 rounded-3xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all duration-300 text-sm resize-none custom-scrollbar bg-white/80 dark:bg-gray-800/80 shadow-md"
             />
           </div>
           <button
             onClick={handleSendMessage}
             disabled={!newMessage.trim()}
-            className="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-3xl hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center min-w-[56px] shadow-lg shadow-purple-500/25 hover:scale-110 pulse-glow"
+            className="px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-3xl hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 flex items-center justify-center min-w-[56px] shadow-lg hover:scale-110"
           >
             <Send className="w-5 h-5" />
           </button>
