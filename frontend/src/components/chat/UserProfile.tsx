@@ -110,10 +110,10 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
                     })}
                   </div>
                 </div>
-                <button className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center transition-all duration-300">
+                {/* <button className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center transition-all duration-300">
                   <Settings className="w-4 h-4 mr-3" />
                   Configurações
-                </button>
+                </button> */}
                 <button
                   onClick={handleLogout}
                   className="w-full px-4 py-3 text-left text-sm text-red-300 hover:bg-red-500/20 hover:text-red-200 flex items-center transition-all duration-300"

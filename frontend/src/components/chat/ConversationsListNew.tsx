@@ -286,7 +286,7 @@ export default function ConversationsList({
                   </button>
                 )}
                 {showDeleteConfirm === conversation.id && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900/100 bg-opacity-95 rounded-2xl z-50 shadow-2xl border border-gray-700 transition-all duration-300">
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-100 rounded-2xl z-50 shadow-2xl border border-gray-700 transition-all duration-300">
                     <p className="text-white text-base font-semibold mb-4">
                       Tem certeza que deseja remover esta conversa?
                     </p>
