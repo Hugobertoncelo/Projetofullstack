@@ -34,6 +34,7 @@ export interface Conversation {
   members: User[];
   messages: Message[];
   lastMessage?: Message;
+  messageCount?: number; // total de mensagens na conversa
 }
 export interface TypingIndicator {
   id: string;

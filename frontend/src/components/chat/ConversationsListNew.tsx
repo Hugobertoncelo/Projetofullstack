@@ -234,6 +234,11 @@ export default function ConversationsList({
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-bold text-white truncate text-lg">
                         {getConversationName(conversation)}
+                        {typeof conversation.messageCount === "number" && (
+                          <span className="ml-2 text-xs text-purple-300 font-normal align-middle bg-white/10 rounded px-2 py-0.5">
+                            {conversation.messageCount} msg
+                          </span>
+                        )}
                       </h3>
                       {conversation.lastMessage && (
                         <span className="text-xs text-white/50 flex-shrink-0 ml-2">
