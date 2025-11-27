@@ -62,6 +62,27 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
                 onClick={() => setShowDropdown(false)}
               />
               <div className="relative w-72 max-w-full bg-gray-900/95 dark:bg-gray-900/95 glass-effect rounded-2xl shadow-2xl border border-white/20 py-2 backdrop-blur-xl flex flex-col">
+                <button
+                  className="absolute top-2 right-2 p-1 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all z-10"
+                  onClick={() => setShowDropdown(false)}
+                  aria-label="Fechar"
+                >
+                  <span className="sr-only">Fechar</span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-5 h-5"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
                 <div className="px-4 py-3 border-b border-white/10">
                   <p className="text-sm font-semibold text-white flex items-center">
                     <Sparkles className="w-4 h-4 mr-2" />
