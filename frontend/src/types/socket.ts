@@ -1,5 +1,14 @@
-import { Server, Socket } from "socket.io";
-import { User } from "@prisma/client";
+import { Socket } from "socket.io-client";
+
+export interface User {
+  id: number;
+  email: string;
+  name: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface SocketWithUser extends Socket {
   userId?: number;
   user?: User;
@@ -19,5 +28,4 @@ export interface ClientToServerEvents {
   typing: (data: any) => void;
   stopTyping: (data: any) => void;
 }
-export type SocketIOServer = Server<ClientToServerEvents, ServerToClientEvents>;
 export type SocketIOSocket = SocketWithUser;
