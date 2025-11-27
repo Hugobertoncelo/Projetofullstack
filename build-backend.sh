@@ -2,10 +2,10 @@
 
 echo "🚀 Starting backend build process..."
 
-# Install dependencies
-echo "📦 Installing dependencies..."
+# Install all dependencies (including devDependencies for build)
+echo "📦 Installing all dependencies..."
 cd backend
-npm ci --production=false
+npm ci --include=dev
 
 # Generate Prisma client
 echo "🗃️ Generating Prisma client..."

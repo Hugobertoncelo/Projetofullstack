@@ -50,8 +50,7 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "winston": "^3.18.3"
-  },
-  "devDependencies": {
+  },  "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/compression": "^1.8.1",
