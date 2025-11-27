@@ -43,18 +43,35 @@ export default function ConversationsList({
   );
   const { user } = useAuth();
 
+  // Function to reset unread count for a conversation
+  const resetUnreadCount = (conversationId: string) => {
+    setUnreadCounts((prev) => ({
+      ...prev,
+      [conversationId]: 0,
+    }));
+  };
+
+  // Force reset unread count when conversation changes and is actively being viewed
   useEffect(() => {
     if (selectedConversationId) {
-      setUnreadCounts((prev) => ({
-        ...prev,
-        [selectedConversationId]: 0,
-      }));
+      // Immediate reset
+      resetUnreadCount(selectedConversationId);
+
+      // Additional reset after a short delay to ensure messages have loaded
+      const timeoutId = setTimeout(() => {
+        resetUnreadCount(selectedConversationId);
+      }, 500);
+
+      return () => clearTimeout(timeoutId);
     }
   }, [selectedConversationId]);
 
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
       console.log("📩 New message in conversations list:", message);
+      // Only increment unread count if:
+      // 1. Message is not from current user
+      // 2. Message is not in currently selected conversation
       if (
         message.senderId !== user?.id &&
         message.conversationId !== selectedConversationId
@@ -66,6 +83,13 @@ export default function ConversationsList({
         setUnreadCounts((prev) => ({
           ...prev,
           [message.conversationId]: (prev[message.conversationId] || 0) + 1,
+        }));
+      }
+      // If message is in selected conversation, ensure count is 0
+      else if (message.conversationId === selectedConversationId) {
+        setUnreadCounts((prev) => ({
+          ...prev,
+          [message.conversationId]: 0,
         }));
       }
     };
@@ -183,7 +207,10 @@ export default function ConversationsList({
                 onMouseLeave={() => setHoveredConversation(null)}
               >
                 <button
-                  onClick={() => onSelectConversation(conversation.id)}
+                  onClick={() => {
+                    onSelectConversation(conversation.id);
+                    resetUnreadCount(conversation.id);
+                  }}
                   className={`w-full flex items-center p-4 rounded-2xl transition-all duration-300 hover-lift text-left ${
                     selectedConversationId === conversation.id
                       ? "glass-effect border-l-4 border-purple-400 transform scale-105"
