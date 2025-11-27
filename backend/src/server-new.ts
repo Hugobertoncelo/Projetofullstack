@@ -85,7 +85,11 @@ app.use(
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3002",
+    origin: [
+      process.env.CORS_ORIGIN || "http://localhost:3002",
+      "http://localhost:3002",
+      "https://chat-frontend-2a0i.onrender.com"
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
