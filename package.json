@@ -4,20 +4,22 @@
   "description": "Sistema de chat em tempo real completo com Next.js, Socket.io, PostgreSQL e Redis",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "server": "node dist/server/index.js",
-    "server:dev": "tsx src/server/index.ts",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
-    "db:studio": "prisma studio",
-    "type-check": "tsc --noEmit",
-    "format": "prettier --write .",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down"
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "start:all": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "db:generate": "cd backend && npm run db:generate",
+    "db:push": "cd backend && npm run db:push",
+    "db:migrate": "cd backend && npm run db:migrate",
+    "db:studio": "cd backend && npm run db:studio",
+    "install:backend": "cd backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:all": "npm run install:backend && npm run install:frontend"
   },
   "keywords": [],
   "author": "",
@@ -82,6 +84,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "tsx": "^4.20.6"
   }
 }
