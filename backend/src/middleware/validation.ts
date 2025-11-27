@@ -60,7 +60,7 @@ export const validateLogin = [
     .isEmail()
     .normalizeEmail()
     .withMessage("Valid email is required"),
-  body("password").isLength({ min: 1 }).withMessage("Password is required"),
+  body("password").isLength({ min: 1 }).withMessage("A senha é obrigatória"),
   body("twoFactorCode")
     .optional()
     .isLength({ min: 6, max: 6 })
