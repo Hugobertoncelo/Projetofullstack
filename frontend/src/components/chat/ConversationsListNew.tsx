@@ -41,6 +41,9 @@ export default function ConversationsList({
   const [hoveredConversation, setHoveredConversation] = useState<string | null>(
     null
   );
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(
+    null
+  );
   const { user } = useAuth();
 
   // Function to reset unread count for a conversation
@@ -138,13 +141,19 @@ export default function ConversationsList({
     conversationId: string
   ) => {
     e.stopPropagation();
-    if (window.confirm("Tem certeza que deseja remover esta conversa?")) {
-      onDeleteConversation(conversationId);
-      if (selectedConversationId === conversationId) {
-        onSelectConversation("");
-      }
-    }
+    setShowDeleteConfirm(conversationId);
   };
+  const confirmDeleteConversation = (conversationId: string) => {
+    onDeleteConversation(conversationId);
+    if (selectedConversationId === conversationId) {
+      onSelectConversation("");
+    }
+    setShowDeleteConfirm(null);
+  };
+  const cancelDeleteConversation = () => {
+    setShowDeleteConfirm(null);
+  };
+
   return (
     <div className="flex flex-col h-full">
       {}
@@ -275,6 +284,29 @@ export default function ConversationsList({
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
+                )}
+                {showDeleteConfirm === conversation.id && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 rounded-2xl z-50">
+                    <p className="text-white text-base font-semibold mb-4">
+                      Tem certeza que deseja remover esta conversa?
+                    </p>
+                    <div className="flex space-x-4">
+                      <button
+                        onClick={() =>
+                          confirmDeleteConversation(conversation.id)
+                        }
+                        className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-all"
+                      >
+                        Remover
+                      </button>
+                      <button
+                        onClick={cancelDeleteConversation}
+                        className="px-4 py-2 bg-gray-300 text-gray-900 rounded-lg font-medium hover:bg-gray-400 transition-all"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             ))}
