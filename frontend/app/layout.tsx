@@ -54,7 +54,9 @@ export default function RootLayout({
       </head>{" "}
       <body
         className={`${inter.className} antialiased min-h-screen bg-background`}
-      >        <ThemeProvider
+      >
+        {" "}
+        <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
