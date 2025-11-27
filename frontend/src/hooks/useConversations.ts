@@ -140,7 +140,23 @@ export function useConversations() {
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
       console.log("📩 New message received:", message);
-      updateConversationLastMessage(message.conversationId, message);
+      setConversations((prev) =>
+        prev
+          .map((conv) =>
+            conv.id === message.conversationId
+              ? {
+                  ...conv,
+                  lastMessage: message,
+                  updatedAt: new Date(),
+                  messageCount: (conv.messageCount || 0) + 1,
+                }
+              : conv
+          )
+          .sort(
+            (a, b) =>
+              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+          )
+      );
     };
 
     const handleConversationUpdate = (conversation: Conversation) => {
@@ -155,7 +171,7 @@ export function useConversations() {
       socketService.offMessageReceived(handleNewMessage);
       socketService.offConversationUpdated(handleConversationUpdate);
     };
-  }, [updateConversationLastMessage, updateConversation]);
+  }, [updateConversation]);
 
   return {
     conversations,
