@@ -41,10 +41,22 @@ const server = createServer(app);
 // Initialize Swagger Documentation
 setupSwagger(app);
 
+const allowedOrigins = [
+  process.env.CORS_ORIGIN || "http://localhost:3002",
+  "http://localhost:3002",
+  "https://chat-frontend-2a0i.onrender.com",
+];
+
 // Socket.IO Server
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3002",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS (Socket.io)"));
+    },
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -82,12 +94,6 @@ app.use(
     },
   })
 );
-
-const allowedOrigins = [
-  process.env.CORS_ORIGIN || "http://localhost:3002",
-  "http://localhost:3002",
-  "https://chat-frontend-2a0i.onrender.com",
-];
 
 app.use(
   cors({
