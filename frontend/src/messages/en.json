@@ -1,0 +1,89 @@
+{
+  "navigation": {
+    "home": "Home",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your account to continue",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "forgot": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Sign up to get started",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "errors": {
+      "invalidCredentials": "Invalid email or password",
+      "userExists": "User already exists",
+      "weakPassword": "Password is too weak",
+      "emailRequired": "Email is required",
+      "passwordRequired": "Password is required"
+    }
+  },
+  "chat": {
+    "title": "Messages",
+    "search": "Search conversations...",
+    "newChat": "New Chat",
+    "startConversation": "Start a conversation...",
+    "typeMessage": "Type your message...",
+    "send": "Send",
+    "online": "Online",
+    "offline": "Offline",
+    "lastSeen": "Last seen",
+    "typing": "typing...",
+    "members": "members",
+    "noMessages": "No messages yet",
+    "sendFirst": "Send a message to start the conversation",
+    "selectChat": "Select a Chat",
+    "chooseExisting": "Choose an existing conversation or start a new one",
+    "deleteConversation": "Are you sure you want to delete this conversation?",
+    "conversationDeleted": "Conversation deleted successfully"
+  },
+  "profile": {
+    "title": "Profile",
+    "displayName": "Display Name",
+    "username": "Username",
+    "email": "Email",
+    "avatar": "Avatar",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "updated": "Profile updated successfully"
+  },
+  "theme": {
+    "title": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "search": "Search",
+    "noResults": "No results found",
+    "tryAgain": "Try again",
+    "continue": "Continue"
+  }
+}

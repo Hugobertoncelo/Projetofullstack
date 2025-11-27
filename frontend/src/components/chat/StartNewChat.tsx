@@ -37,13 +37,15 @@ export default function StartNewChat({
     try {
       setIsLoading(true);
       console.log("👥 Loading users...");
-      const response = await apiService.getOnlineUsers();
+      const response = await apiService.getAvailableUsers();
       if (response.success && response.data?.users) {
         console.log("✅ Users loaded:", response.data.users.length);
         const filteredUsers = response.data.users.filter(
           (u: User) => u.id !== user?.id
         );
         setUsers(filteredUsers);
+      } else {
+        console.error("❌ Error loading users:", response.error);
       }
     } catch (error) {
       console.error("❌ Error loading users:", error);

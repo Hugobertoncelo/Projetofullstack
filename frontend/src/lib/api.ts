@@ -13,6 +13,7 @@ class ApiService {
     this.client = axios.create({
       baseURL: baseURL,
       timeout: 10000,
+      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
@@ -111,6 +112,12 @@ class ApiService {
   async searchUsers(query: string, page = 1, limit = 20): Promise<ApiResponse> {
     const response = await this.client.get("/users/search", {
       params: { query, page, limit },
+    });
+    return response.data;
+  }
+  async getAvailableUsers(page = 1, limit = 20): Promise<ApiResponse> {
+    const response = await this.client.get("/users", {
+      params: { page, limit },
     });
     return response.data;
   }

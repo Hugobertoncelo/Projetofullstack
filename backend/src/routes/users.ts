@@ -3,6 +3,57 @@ import { prisma } from "../lib/prisma";
 import { asyncHandler, createError } from "../middleware/errorHandler";
 import { AuthenticatedRequest } from "../middleware/auth";
 const router = express.Router();
+
+// Get all available users
+router.get(
+  "/",
+  asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+    const { page = 1, limit = 20 } = req.query;
+    const offset = (Number(page) - 1) * Number(limit);
+
+    const users = await prisma.user.findMany({
+      where: {
+        id: { not: req.user!.id }, // Exclude current user
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        avatar: true,
+        isOnline: true,
+        lastSeen: true,
+        createdAt: true,
+      },
+      skip: offset,
+      take: Number(limit),
+      orderBy: [{ isOnline: "desc" }, { lastSeen: "desc" }],
+    });
+
+    const totalUsers = await prisma.user.count({
+      where: {
+        id: { not: req.user!.id },
+      },
+    });
+
+    const totalPages = Math.ceil(totalUsers / Number(limit));
+
+    res.json({
+      success: true,
+      data: {
+        users,
+        pagination: {
+          page: Number(page),
+          limit: Number(limit),
+          total: totalUsers,
+          totalPages,
+          hasNext: Number(page) < totalPages,
+          hasPrev: Number(page) > 1,
+        },
+      },
+    });
+  })
+);
+
 router.get(
   "/search",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
@@ -197,49 +248,6 @@ router.put(
       success: true,
       data: { user: updatedUser },
       message: "Profile updated successfully",
-    });
-  })
-);
-router.get(
-  "/",
-  asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-    const { page = 1, limit = 50 } = req.query;
-    const offset = (Number(page) - 1) * Number(limit);
-    const users = await prisma.user.findMany({
-      where: {
-        AND: [{ id: { not: req.user!.id } }, { isOnline: true }],
-      },
-      select: {
-        id: true,
-        username: true,
-        displayName: true,
-        avatar: true,
-        isOnline: true,
-        lastSeen: true,
-      },
-      skip: offset,
-      take: Number(limit),
-      orderBy: { lastSeen: "desc" },
-    });
-    const totalOnlineUsers = await prisma.user.count({
-      where: {
-        AND: [{ id: { not: req.user!.id } }, { isOnline: true }],
-      },
-    });
-    const totalPages = Math.ceil(totalOnlineUsers / Number(limit));
-    res.json({
-      success: true,
-      data: {
-        users,
-        pagination: {
-          page: Number(page),
-          limit: Number(limit),
-          total: totalOnlineUsers,
-          totalPages,
-          hasNext: Number(page) < totalPages,
-          hasPrev: Number(page) > 1,
-        },
-      },
     });
   })
 );

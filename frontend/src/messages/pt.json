@@ -1,0 +1,89 @@
+{
+  "navigation": {
+    "home": "Início",
+    "login": "Entrar",
+    "register": "Registrar",
+    "logout": "Sair",
+    "profile": "Perfil",
+    "settings": "Configurações"
+  },
+  "auth": {
+    "login": {
+      "title": "Bem-vindo de volta",
+      "subtitle": "Inicie sessão na sua conta para continuar",
+      "email": "Email",
+      "password": "Senha",
+      "submit": "Entrar",
+      "forgot": "Esqueceu a senha?",
+      "noAccount": "Não tem uma conta?",
+      "signUp": "Registrar"
+    },
+    "register": {
+      "title": "Criar Conta",
+      "subtitle": "Registre-se para começar",
+      "username": "Nome de usuário",
+      "email": "Email",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "submit": "Criar Conta",
+      "hasAccount": "Já tem uma conta?",
+      "signIn": "Entrar"
+    },
+    "errors": {
+      "invalidCredentials": "Email ou senha inválidos",
+      "userExists": "Usuário já existe",
+      "weakPassword": "Senha muito fraca",
+      "emailRequired": "Email é obrigatório",
+      "passwordRequired": "Senha é obrigatória"
+    }
+  },
+  "chat": {
+    "title": "Mensagens",
+    "search": "Pesquisar conversas...",
+    "newChat": "Nova Conversa",
+    "startConversation": "Inicie uma conversa...",
+    "typeMessage": "Digite sua mensagem...",
+    "send": "Enviar",
+    "online": "Online",
+    "offline": "Offline",
+    "lastSeen": "Visto por último",
+    "typing": "digitando...",
+    "members": "membros",
+    "noMessages": "Ainda sem mensagens",
+    "sendFirst": "Envie uma mensagem para iniciar a conversa",
+    "selectChat": "Selecione uma Conversa",
+    "chooseExisting": "Escolha uma conversa existente ou inicie uma nova",
+    "deleteConversation": "Tem certeza que deseja excluir esta conversa?",
+    "conversationDeleted": "Conversa excluída com sucesso"
+  },
+  "profile": {
+    "title": "Perfil",
+    "displayName": "Nome de Exibição",
+    "username": "Nome de usuário",
+    "email": "Email",
+    "avatar": "Avatar",
+    "save": "Salvar Alterações",
+    "cancel": "Cancelar",
+    "updated": "Perfil atualizado com sucesso"
+  },
+  "theme": {
+    "title": "Tema",
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "common": {
+    "loading": "Carregando...",
+    "error": "Erro",
+    "success": "Sucesso",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "delete": "Excluir",
+    "edit": "Editar",
+    "close": "Fechar",
+    "search": "Pesquisar",
+    "noResults": "Nenhum resultado encontrado",
+    "tryAgain": "Tentar novamente",
+    "continue": "Continuar"
+  }
+}

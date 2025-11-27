@@ -1,0 +1,44 @@
+# Backend Dockerfile
+FROM node:20-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Development image
+FROM base AS dev
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm ci
+COPY backend/ .
+EXPOSE 3001
+CMD ["npm", "run", "dev"]
+
+# Build the app
+FROM base AS builder
+WORKDIR /app/backend
+COPY backend/package*.json ./
+RUN npm ci
+COPY backend/ .
+RUN npm run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app/backend
+ENV NODE_ENV=production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+
+COPY --from=deps /app/backend/node_modules ./node_modules
+COPY --from=builder /app/backend/dist ./dist
+COPY --from=builder /app/backend/prisma ./prisma
+COPY --from=builder /app/backend/package*.json ./
+
+USER nodejs
+EXPOSE 3001
+ENV PORT 3001
+
+CMD ["npm", "start"]
