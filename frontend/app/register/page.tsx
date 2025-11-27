@@ -21,14 +21,14 @@ import { motion } from "framer-motion";
 import { validatePassword, isValidUsername } from "../../src/lib/utils";
 const registerSchema = z
   .object({
-    email: z.string().email("Invalid email address"),
+    email: z.string().email("Endereço de e-mail inválido"),
     username: z
       .string()
-      .min(3, "Username must be at least 3 characters")
-      .max(20, "Username must be less than 20 characters")
+      .min(3, "O nome de usuário deve ter pelo menos 3 caracteres.")
+      .max(20, "O nome de usuário deve ter menos de 20 caracteres.")
       .refine(
         isValidUsername,
-        "Username can only contain letters, numbers, underscores and hyphens"
+        "O nome de usuário só pode conter letras, números, sublinhados e hífenes."
       ),
     displayName: z.string().optional(),
     password: z
@@ -36,12 +36,12 @@ const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .refine(
         (password) => validatePassword(password).isValid,
-        "Password does not meet security requirements"
+        "A senha não atende aos requisitos de segurança."
       ),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "As senhas não coincidem.",
     path: ["confirmPassword"],
   });
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -104,14 +104,17 @@ export default function RegisterPage() {
     );
   }
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-indigo-700 to-blue-900 px-4 py-12 relative overflow-hidden">
+      {/* Efeitos de luz de fundo */}
+      <div className="absolute top-1/3 left-1/4 w-72 h-72 bg-purple-500 opacity-30 blur-[120px] animate-pulse-slow z-0"></div>
+      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-indigo-500 opacity-30 blur-[120px] animate-pulse-slow z-0"></div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
-        <div className="card bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-white/20 dark:border-gray-700/20 shadow-xl">
+        <div className="card bg-white/10 border border-white/10 rounded-2xl shadow-[0_0_40px_rgba(120,40,255,0.4)] backdrop-blur-xl p-8">
           <div className="card-header text-center">
             <motion.div
               initial={{ scale: 0.8 }}
@@ -119,115 +122,112 @@ export default function RegisterPage() {
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
               className="flex items-center justify-center mb-4"
             >
-              <div className="bg-primary rounded-full p-3">
-                <MessageCircle className="h-8 w-8 text-primary-foreground" />
+              <div className="bg-gradient-to-br from-purple-600 to-indigo-600 p-4 rounded-full shadow-xl shadow-purple-500/40">
+                <MessageCircle className="h-10 w-10 text-white" />
               </div>
             </motion.div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-              Criar uma Conta
+            <h1 className="text-3xl font-extrabold text-white text-center tracking-wide">
+              Crie sua Conta
             </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-2">
+            <p className="text-gray-200 text-center mt-2 text-sm">
               Participe de conversas seguras com milhares de usuários.
             </p>
           </div>
-          <div className="card-content">
+          <div className="card-content mt-6">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {error && (
                 <motion.div
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm"
+                  className="bg-red-500/20 text-red-300 border border-red-700 px-4 py-3 rounded-lg text-sm mb-2"
                 >
                   {error}
                 </motion.div>
               )}
               <div className="space-y-4">
+                {/* Email */}
                 <div>
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-200 mb-2"
                   >
                     Endereço de email
                   </label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      {...register("email")}
-                      type="email"
-                      id="email"
-                      placeholder="Digite seu e-mail"
-                      className="input-field pl-10"
-                      disabled={isLoading}
-                    />
-                  </div>
+                  <input
+                    {...register("email")}
+                    type="email"
+                    id="email"
+                    placeholder="Digite seu e-mail"
+                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
+                    disabled={isLoading}
+                  />
                   {errors.email && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-400 text-sm mt-1">
                       {errors.email.message}
                     </p>
                   )}
                 </div>
+                {/* Username */}
                 <div>
                   <label
                     htmlFor="username"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-200 mb-2"
                   >
                     Nome de usuário
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <input
-                      {...register("username")}
-                      type="text"
-                      id="username"
-                      placeholder="Escolha um nome"
-                      className="input-field pl-10"
-                      disabled={isLoading}
-                    />
-                  </div>
+                  <input
+                    {...register("username")}
+                    type="text"
+                    id="username"
+                    placeholder="Escolha um nome"
+                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
+                    disabled={isLoading}
+                  />
                   {errors.username && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-400 text-sm mt-1">
                       {errors.username.message}
                     </p>
                   )}
                 </div>
+                {/* Display Name */}
                 <div>
                   <label
                     htmlFor="displayName"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-200 mb-2"
                   >
                     Nome de exibição{" "}
-                    <span className="text-gray-400">(optional)</span>
+                    <span className="text-gray-400">(opcional)</span>
                   </label>
                   <input
                     {...register("displayName")}
                     type="text"
                     id="displayName"
                     placeholder="Seu nome de exibição"
-                    className="input-field"
+                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
                     disabled={isLoading}
                   />
                 </div>
+                {/* Password */}
                 <div>
                   <label
                     htmlFor="password"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-200 mb-2"
                   >
                     Senha
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       {...register("password")}
                       type={showPassword ? "text" : "password"}
                       id="password"
                       placeholder="Crie uma senha segura"
-                      className="input-field pl-10 pr-10"
+                      className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20 pr-10"
                       disabled={isLoading}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white transition"
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -237,7 +237,7 @@ export default function RegisterPage() {
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-400 text-sm mt-1">
                       {errors.password.message}
                     </p>
                   )}
@@ -245,17 +245,17 @@ export default function RegisterPage() {
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
-                      className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg"
+                      className="mt-2 p-3 bg-white/10 rounded-lg"
                     >
-                      <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <p className="text-xs font-medium text-gray-200 mb-2">
                         Requisitos de senha:
                       </p>
                       <div className="space-y-1 text-xs">
                         <div
                           className={`flex items-center ${
                             watchPassword.length >= 8
-                              ? "text-green-600"
-                              : "text-gray-500"
+                              ? "text-green-400"
+                              : "text-gray-400"
                           }`}
                         >
                           {watchPassword.length >= 8 ? (
@@ -268,8 +268,8 @@ export default function RegisterPage() {
                         <div
                           className={`flex items-center ${
                             /[A-Z]/.test(watchPassword)
-                              ? "text-green-600"
-                              : "text-gray-500"
+                              ? "text-green-400"
+                              : "text-gray-400"
                           }`}
                         >
                           {/[A-Z]/.test(watchPassword) ? (
@@ -282,8 +282,8 @@ export default function RegisterPage() {
                         <div
                           className={`flex items-center ${
                             /[a-z]/.test(watchPassword)
-                              ? "text-green-600"
-                              : "text-gray-500"
+                              ? "text-green-400"
+                              : "text-gray-400"
                           }`}
                         >
                           {/[a-z]/.test(watchPassword) ? (
@@ -296,8 +296,8 @@ export default function RegisterPage() {
                         <div
                           className={`flex items-center ${
                             /[0-9]/.test(watchPassword)
-                              ? "text-green-600"
-                              : "text-gray-500"
+                              ? "text-green-400"
+                              : "text-gray-400"
                           }`}
                         >
                           {/[0-9]/.test(watchPassword) ? (
@@ -312,8 +312,8 @@ export default function RegisterPage() {
                             /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
                               watchPassword
                             )
-                              ? "text-green-600"
-                              : "text-gray-500"
+                              ? "text-green-400"
+                              : "text-gray-400"
                           }`}
                         >
                           {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
@@ -329,21 +329,21 @@ export default function RegisterPage() {
                     </motion.div>
                   )}
                 </div>
+                {/* Confirm Password */}
                 <div>
                   <label
                     htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                    className="block text-sm font-medium text-gray-200 mb-2"
                   >
                     Confirme sua senha
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <input
                       {...register("confirmPassword")}
                       type={showConfirmPassword ? "text" : "password"}
                       id="confirmPassword"
                       placeholder="Confirme sua senha"
-                      className="input-field pl-10 pr-10"
+                      className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20 pr-10"
                       disabled={isLoading}
                     />
                     <button
@@ -351,7 +351,7 @@ export default function RegisterPage() {
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white transition"
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -361,7 +361,7 @@ export default function RegisterPage() {
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-400 text-sm mt-1">
                       {errors.confirmPassword.message}
                     </p>
                   )}
@@ -370,23 +370,23 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isLoading || !passwordStrength.isValid}
-                className="w-full btn-primary h-11 rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg"
+                className="w-full py-3 mt-4 rounded-xl font-semibold text-white bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg shadow-purple-500/50 hover:shadow-purple-600/70 transition-all text-lg"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
                     <LoadingSpinner size="sm" className="mr-2" />
-                    Creating Account...
+                    Criando Conta...
                   </div>
                 ) : (
                   "Criar Conta"
                 )}
               </button>
-              <div className="text-center pt-4 border-t border-gray-200 dark:border-gray-700">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+              <div className="text-center pt-4 border-t border-white/10">
+                <p className="text-sm text-gray-200">
                   Já tem uma conta?{" "}
                   <Link
                     href="/login"
-                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                    className="text-purple-300 hover:underline font-medium transition-colors"
                   >
                     Faça login aqui
                   </Link>
@@ -396,18 +396,16 @@ export default function RegisterPage() {
           </div>
         </div>
         <div className="text-center mt-8">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            Ao criar uma conta, você concorda com nossos termos.{" "}
-            <Link href="/terms" className="text-primary hover:text-primary/80">
+          <p className="text-xs text-gray-300">
+            Ao criar uma conta, você concorda com nossos{" "}
+            <Link href="/terms" className="text-purple-300 hover:underline">
               Termos de Serviço
             </Link>{" "}
             e{" "}
-            <Link
-              href="/privacy"
-              className="text-primary hover:text-primary/80"
-            >
+            <Link href="/privacy" className="text-purple-300 hover:underline">
               Política de Privacidade
             </Link>
+            .
           </p>
         </div>
       </motion.div>
