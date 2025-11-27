@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 import { asyncHandler, createError } from "../middleware/errorHandler";
 import { AuthenticatedRequest } from "../middleware/auth";
 const router = express.Router();
@@ -15,7 +15,7 @@ router.get(
       where: {
         AND: [
           {
-            id: { not: req.user!.id }, 
+            id: { not: req.user!.id },
           },
           {
             OR: [
@@ -337,7 +337,7 @@ router.get(
           totalConversations: conversationCount,
           activeConversations,
           messagesToday,
-          totalUsers: totalUsers - 1, 
+          totalUsers: totalUsers - 1,
         },
       },
     });

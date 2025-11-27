@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import speakeasy from "speakeasy";
 import nodemailer from "nodemailer";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 import { asyncHandler, createError } from "../middleware/errorHandler";
 import { validateJWT, AuthenticatedRequest } from "../middleware/auth";
 const router = express.Router();

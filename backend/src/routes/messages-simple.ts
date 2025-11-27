@@ -1,5 +1,5 @@
 import express, { Response } from "express";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 import { asyncHandler, createError } from "../middleware/errorHandler";
 import { AuthenticatedRequest } from "../middleware/auth";
 import { MessageType } from "@prisma/client";

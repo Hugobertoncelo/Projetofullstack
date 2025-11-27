@@ -8,22 +8,23 @@ import morgan from "morgan";
 import compression from "compression";
 import rateLimit from "express-rate-limit";
 import jwt from "jsonwebtoken";
-import { authRoutes } from "./routes/auth.js";
-import { messageRoutes, setSocketInstance } from "./routes/messages-simple.js";
-import { conversationRoutes } from "./routes/conversations.js";
-import { userRoutes } from "./routes/users.js";
-import { socketHandler } from "./services/socket-simple.js";
-import { errorHandler } from "./middleware/errorHandler.js";
-import { validateJWT } from "./middleware/auth.js";
-import { prisma } from "./lib/prisma.js";
-import { redis } from "./lib/redis.js";
+import { authRoutes } from "./routes/auth";
+import { messageRoutes, setSocketInstance } from "./routes/messages-simple";
+import { conversationRoutes } from "./routes/conversations";
+import { userRoutes } from "./routes/users";
+import { socketHandler } from "./services/socket-simple";
+import { errorHandler } from "./middleware/errorHandler";
+import { validateJWT } from "./middleware/auth";
+import { prisma } from "./lib/prisma";
+import { redis } from "./lib/redis";
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
-    credentials: true,  },
+    credentials: true,
+  },
 });
 
 app.use(

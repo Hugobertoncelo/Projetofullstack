@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { prisma } from "../lib/prisma.js";
+import { prisma } from "../lib/prisma";
 interface AuthenticatedSocket extends Socket {
   userId?: string;
   user?: {
