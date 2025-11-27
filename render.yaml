@@ -1,0 +1,65 @@
+services:
+  # Backend API Service
+  - type: web
+    name: chat-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chat-postgres
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: chat-redis
+          property: connectionString
+      - key: CORS_ORIGIN
+        value: https://chat-frontend-your-app.onrender.com
+      - key: ELASTICSEARCH_URL
+        value: ""
+      - key: EMAIL_HOST
+        value: smtp.gmail.com
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USER
+        value: ""
+      - key: EMAIL_PASSWORD
+        value: ""
+
+  # Frontend Service
+  - type: web
+    name: chat-frontend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://chat-backend-your-app.onrender.com
+      - key: NEXT_PUBLIC_SOCKET_URL
+        value: https://chat-backend-your-app.onrender.com
+
+databases:
+  - name: chat-postgres
+    databaseName: chatdb
+    user: chatuser
+    region: oregon
+    plan: free
+
+  - name: chat-redis
+    region: oregon
+    plan: free

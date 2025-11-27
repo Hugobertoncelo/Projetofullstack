@@ -9,7 +9,7 @@ const nextConfig = {
 
   // Image optimization
   images: {
-    domains: ['localhost', 'example.com'],
+    domains: ['localhost', 'example.com', 'onrender.com'],
     formats: ['image/webp', 'image/avif'],
   },
 
@@ -18,6 +18,10 @@ const nextConfig = {
     optimizeCss: true,
     scrollRestoration: true,
   },
+
+  // Production optimizations
+  compress: true,
+  generateEtags: false,
 
   webpack: (config, { isServer }) => {
     if (!isServer) {
