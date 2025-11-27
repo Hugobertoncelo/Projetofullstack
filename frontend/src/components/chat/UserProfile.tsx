@@ -56,47 +56,51 @@ export default function UserProfile({ onToggleSidebar }: UserProfileProps) {
           </button>
 
           {showDropdown && (
-            <div className="absolute right-0 mt-2 w-56 bg-gray-900/95 dark:bg-gray-900/95 glass-effect rounded-2xl shadow-xl border border-white/20 py-2 z-50 backdrop-blur-xl">
-              <div className="px-4 py-3 border-b border-white/10">
-                <p className="text-sm font-semibold text-white flex items-center">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Tema
-                </p>
-                <div className="flex items-center justify-between mt-3 space-x-2">
-                  {themeOptions.map((option) => {
-                    const IconComponent = option.icon;
-                    return (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          setTheme(option.value);
-                          setShowDropdown(false);
-                        }}
-                        className={`flex-1 p-2 rounded-xl transition-all duration-300 ${
-                          theme === option.value
-                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white transform scale-105"
-                            : "hover:bg-white/10 text-white/70 hover:text-white"
-                        }`}
-                      >
-                        <IconComponent className="w-4 h-4 mx-auto" />
-                      </button>
-                    );
-                  })}
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div
+                className="absolute inset-0 bg-black/60"
+                onClick={() => setShowDropdown(false)}
+              />
+              <div className="relative w-72 max-w-full bg-gray-900/95 dark:bg-gray-900/95 glass-effect rounded-2xl shadow-2xl border border-white/20 py-2 backdrop-blur-xl flex flex-col">
+                <div className="px-4 py-3 border-b border-white/10">
+                  <p className="text-sm font-semibold text-white flex items-center">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Tema
+                  </p>
+                  <div className="flex items-center justify-between mt-3 space-x-2">
+                    {themeOptions.map((option) => {
+                      const IconComponent = option.icon;
+                      return (
+                        <button
+                          key={option.value}
+                          onClick={() => {
+                            setTheme(option.value);
+                            setShowDropdown(false);
+                          }}
+                          className={`flex-1 p-2 rounded-xl transition-all duration-300 ${
+                            theme === option.value
+                              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white transform scale-105"
+                              : "hover:bg-white/10 text-white/70 hover:text-white"
+                          }`}
+                        >
+                          <IconComponent className="w-4 h-4 mx-auto" />
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
+                <button className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center transition-all duration-300">
+                  <Settings className="w-4 h-4 mr-3" />
+                  Configurações
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full px-4 py-3 text-left text-sm text-red-300 hover:bg-red-500/20 hover:text-red-200 flex items-center transition-all duration-300"
+                >
+                  <LogOut className="w-4 h-4 mr-3" />
+                  Sair
+                </button>
               </div>
-
-              <button className="w-full px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white flex items-center transition-all duration-300">
-                <Settings className="w-4 h-4 mr-3" />
-                Configurações
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full px-4 py-3 text-left text-sm text-red-300 hover:bg-red-500/20 hover:text-red-200 flex items-center transition-all duration-300"
-              >
-                <LogOut className="w-4 h-4 mr-3" />
-                Sair
-              </button>
             </div>
           )}
         </div>
