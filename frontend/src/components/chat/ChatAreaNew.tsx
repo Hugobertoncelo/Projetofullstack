@@ -21,6 +21,10 @@ export default function ChatArea({
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [typingUsers, setTypingUsers] = useState<
+    { userId: string; username: string }[]
+  >([]);
+  const typingTimeouts = useRef<{ [userId: string]: NodeJS.Timeout }>({});
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -48,6 +52,45 @@ export default function ChatArea({
     socketService.onMessageReceived(handleNewMessage);
     return () => {
       socketService.offMessageReceived(handleNewMessage);
+    };
+  }, [conversation?.id, user?.id]);
+  useEffect(() => {
+    if (!conversation?.id || !user?.id) return;
+    const handleUserTyping = (data: {
+      userId: string;
+      username: string;
+      conversationId: string;
+    }) => {
+      if (data.userId !== user.id && data.conversationId === conversation.id) {
+        setTypingUsers((prev) => {
+          if (prev.some((u) => u.userId === data.userId)) return prev;
+          return [...prev, { userId: data.userId, username: data.username }];
+        });
+        // Remove typing after 3s if no stopTyping received
+        if (typingTimeouts.current[data.userId])
+          clearTimeout(typingTimeouts.current[data.userId]);
+        typingTimeouts.current[data.userId] = setTimeout(() => {
+          setTypingUsers((prev) =>
+            prev.filter((u) => u.userId !== data.userId)
+          );
+        }, 3000);
+      }
+    };
+    const handleUserStoppedTyping = (data: {
+      userId: string;
+      conversationId: string;
+    }) => {
+      if (data.userId !== user.id && data.conversationId === conversation.id) {
+        setTypingUsers((prev) => prev.filter((u) => u.userId !== data.userId));
+        if (typingTimeouts.current[data.userId])
+          clearTimeout(typingTimeouts.current[data.userId]);
+      }
+    };
+    socketService.onUserTyping(handleUserTyping);
+    socketService.onUserStoppedTyping(handleUserStoppedTyping);
+    return () => {
+      socketService.offUserTyping(handleUserTyping);
+      socketService.offUserStoppedTyping(handleUserStoppedTyping);
     };
   }, [conversation?.id, user?.id]);
   const getOtherUser = (conversation: Conversation) => {
@@ -120,6 +163,16 @@ export default function ChatArea({
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value);
+    if (conversation?.id) {
+      if (e.target.value) {
+        socketService.startTyping(conversation.id);
+      } else {
+        socketService.stopTyping(conversation.id);
+      }
     }
   };
   if (!conversation) {
@@ -263,12 +316,18 @@ export default function ChatArea({
         </div>
       </div>
       <div className="p-4 md:p-8 border-t border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 rounded-t-3xl shadow-lg">
+        {typingUsers.length > 0 && (
+          <div className="text-xs text-gray-500 dark:text-gray-400 px-2 pb-1 animate-fadeIn">
+            {typingUsers.map((u) => u.username).join(", ")}{" "}
+            {typingUsers.length === 1 ? "está" : "estão"} digitando...
+          </div>
+        )}
         <div className="flex space-x-4 items-end">
           <div className="flex-1 relative">
             <input
               type="text"
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               placeholder="Digite sua mensagem..."
               className="w-full px-6 py-4 glass-effect border border-gray-300 dark:border-gray-700 rounded-3xl text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-purple-400 focus:ring-2 focus:ring-purple-400/30 outline-none transition-all duration-300 text-sm resize-none custom-scrollbar bg-white/80 dark:bg-gray-800/80 shadow-md"

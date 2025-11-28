@@ -100,12 +100,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return { success: true };
         }
       }
-      return { success: false, error: response.error || "Login failed" };
+      return { success: false, error: response.error || "Falha no login" };
     } catch (error: any) {
       console.error("Login error:", error);
       return {
         success: false,
-        error: error.response?.data?.error || "Login failed",
+        error: error.response?.data?.error || "Falha no login",
       };
     }
   };
