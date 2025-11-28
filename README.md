@@ -34,7 +34,7 @@ Este projeto é um sistema de chat moderno, fullstack, com autenticação, chat 
    npm run server:dev # na raiz ou backend
    npm run dev        # na raiz ou frontend
    ```
-3. Acesse: http://localhost:3000
+3. Acesse: http://localhost:3002
 
 ## Variáveis de ambiente
 
