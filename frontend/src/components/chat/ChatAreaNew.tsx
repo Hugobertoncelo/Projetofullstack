@@ -40,16 +40,21 @@ export default function ChatArea({
     };
   }, [conversation?.id, user?.id]);
   useEffect(() => {
-    if (!conversation?.id || !user?.id) return;
+    if (!conversation?.id) return;
+    // Atualiza o contador de mensagens ao mudar de conversa
+    setMessages([]);
+    loadMessages();
+  }, [conversation?.id]);
+  useEffect(() => {
+    if (!conversation) return;
     const handleNewMessage = (message: Message) => {
       if (message.conversationId === conversation.id) {
         setMessages((prev) => {
           if (prev.some((m) => m.id === message.id)) return prev;
           return [...prev, message];
         });
-        // Atualiza o contador de mensagens local
         if (conversation.messageCount !== undefined) {
-          conversation.messageCount += 1;
+          conversation.messageCount = (conversation.messageCount || 0) + 1;
         }
       }
     };
@@ -57,7 +62,7 @@ export default function ChatArea({
     return () => {
       socketService.offMessageReceived(handleNewMessage);
     };
-  }, [conversation]);
+  }, [conversation, messages]);
   useEffect(() => {
     if (!conversation?.id || !user?.id) return;
     const handleUserTyping = (data: {
@@ -114,12 +119,6 @@ export default function ChatArea({
     if (other) return getInitials(other.displayName || other.username);
     return "?";
   };
-  useEffect(() => {
-    if (conversation?.id) {
-      setMessages([]);
-      loadMessages();
-    }
-  }, [conversation?.id]);
   const loadMessages = async () => {
     if (!conversation?.id) return;
     try {
