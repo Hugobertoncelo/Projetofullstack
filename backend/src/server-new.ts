@@ -10,7 +10,7 @@ import session from "express-session";
 import jwt from "jsonwebtoken";
 
 import { authRoutes } from "./routes/auth";
-import { messageRoutes, setSocketInstance } from "./routes/messages-simple";
+import { messageRoutes } from "./routes/messages-simple";
 import { conversationRoutes } from "./routes/conversations";
 import { userRoutes } from "./routes/users";
 
@@ -30,6 +30,7 @@ import "./config/queues";
 
 import { prisma } from "./lib/prisma";
 import { redis } from "./lib/redis";
+import { setSocketInstance } from "./controllers/messageController";
 
 const app = express();
 const server = createServer(app);
