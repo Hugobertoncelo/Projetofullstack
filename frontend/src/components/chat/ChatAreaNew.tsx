@@ -215,7 +215,18 @@ export default function ChatArea({
           <div>
             <h2 className="font-bold text-gray-900 dark:text-white text-2xl">
               {getConversationName(conversation)}
+              {typeof conversation.messageCount === "number" && (
+                <span className="ml-2 text-xs text-purple-400 font-normal align-middle bg-white/10 rounded px-2 py-0.5">
+                  {conversation.messageCount} msg
+                </span>
+              )}
             </h2>
+            {typingUsers.length > 0 && (
+              <div className="text-xs text-purple-400 dark:text-purple-300 mt-1 animate-fadeIn">
+                {typingUsers.map((u) => u.username).join(", ")}{" "}
+                {typingUsers.length === 1 ? "está" : "estão"} digitando...
+              </div>
+            )}
             {conversation.isGroup && conversation.members && (
               <p className="text-gray-500 dark:text-gray-400 text-sm">
                 {conversation.members.length} membros
