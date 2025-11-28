@@ -1,5 +1,4 @@
 services:
-  # Backend API Service
   - type: web
     name: chat-backend
     runtime: node
@@ -37,7 +36,6 @@ services:
       - key: EMAIL_PASSWORD
         value: ""
 
-  # Frontend Service
   - type: web
     name: chat-frontend
     runtime: node

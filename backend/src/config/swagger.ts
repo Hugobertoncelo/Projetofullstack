@@ -126,7 +126,7 @@ const options = {
       },
     ],
   },
-  apis: ["./src/routes/*.ts", "./src/server.ts"], // Path to the API files
+  apis: ["./src/routes/*.ts", "./src/server.ts"],
 };
 
 const specs = swaggerJSDoc(options);
@@ -142,7 +142,6 @@ export const setupSwagger = (app: Express) => {
     })
   );
 
-  // JSON endpoint for the API spec
   app.get("/api/docs.json", (req, res) => {
     res.setHeader("Content-Type", "application/json");
     res.send(specs);

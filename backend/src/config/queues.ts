@@ -3,7 +3,6 @@ import { redis } from "../lib/redis";
 import Logger from "./logger";
 import { elasticsearchService } from "./elasticsearch";
 
-// Email Queue for sending notifications
 export const emailQueue = new Bull("email", {
   redis: {
     host: process.env.REDIS_HOST || "localhost",
@@ -20,7 +19,6 @@ export const emailQueue = new Bull("email", {
   },
 });
 
-// Search Index Queue for Elasticsearch operations
 export const searchIndexQueue = new Bull("search-index", {
   redis: {
     host: process.env.REDIS_HOST || "localhost",
@@ -33,15 +31,12 @@ export const searchIndexQueue = new Bull("search-index", {
   },
 });
 
-// Email Queue Processor
 emailQueue.process("send-notification", async (job) => {
   const { to, subject, text, html, type } = job.data;
 
   try {
     Logger.info(`📧 Processing email job: ${type} to ${to}`);
 
-    // Here you would integrate with your email service
-    // For now, we'll just log it
     Logger.info(`📨 Email sent successfully: ${subject} to ${to}`);
 
     return { success: true, messageId: `msg_${Date.now()}` };
@@ -51,7 +46,6 @@ emailQueue.process("send-notification", async (job) => {
   }
 });
 
-// Search Index Queue Processor
 searchIndexQueue.process("index-message", async (job) => {
   const { message } = job.data;
 
@@ -91,9 +85,7 @@ searchIndexQueue.process("delete-message", async (job) => {
   }
 });
 
-// Queue Helper Functions
 export const queueHelpers = {
-  // Add email to queue
   async sendEmail(emailData: {
     to: string;
     subject: string;
@@ -106,22 +98,18 @@ export const queueHelpers = {
     });
   },
 
-  // Add message to search index
   async indexMessage(message: any) {
     return await searchIndexQueue.add("index-message", { message });
   },
 
-  // Add user to search index
   async indexUser(user: any) {
     return await searchIndexQueue.add("index-user", { user });
   },
 
-  // Remove message from search index
   async deleteMessageFromIndex(messageId: string) {
     return await searchIndexQueue.add("delete-message", { messageId });
   },
 
-  // Get queue stats
   async getQueueStats() {
     const [emailStats, searchStats] = await Promise.all([
       Promise.all([
@@ -155,7 +143,6 @@ export const queueHelpers = {
   },
 };
 
-// Queue Event Listeners
 emailQueue.on("completed", (job) => {
   Logger.info(`📧 Email job completed: ${job.id}`);
 });

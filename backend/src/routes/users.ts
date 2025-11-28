@@ -4,7 +4,6 @@ import { asyncHandler, createError } from "../middleware/errorHandler";
 import { AuthenticatedRequest } from "../middleware/auth";
 const router = express.Router();
 
-// Get all available users
 router.get(
   "/",
   asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
@@ -13,7 +12,7 @@ router.get(
 
     const users = await prisma.user.findMany({
       where: {
-        id: { not: req.user!.id }, // Exclude current user
+        id: { not: req.user!.id },
       },
       select: {
         id: true,

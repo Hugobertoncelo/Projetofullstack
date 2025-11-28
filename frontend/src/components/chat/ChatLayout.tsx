@@ -44,7 +44,6 @@ export default function ChatLayout() {
 
   return (
     <div className="flex h-screen animated-bg">
-      {}
       <div
         className={`${
           isSidebarOpen ? "w-80" : "w-0"
@@ -60,7 +59,6 @@ export default function ChatLayout() {
           isLoading={isLoading}
         />
       </div>
-      {}
       <div className="flex-1 flex flex-col overflow-hidden">
         <ChatArea
           conversation={selectedConversation}

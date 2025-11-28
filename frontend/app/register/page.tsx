@@ -5,46 +5,16 @@ import Link from "next/link";
 import { useAuth } from "../../src/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
-  Eye,
-  EyeOff,
-  MessageCircle,
-  Lock,
-  Mail,
-  User,
-  Check,
-  X,
-} from "lucide-react";
+import { Eye, EyeOff, MessageCircle, Check, X } from "lucide-react";
 import LoadingSpinner from "../../src/components/LoadingSpinner";
 import { motion } from "framer-motion";
-import { validatePassword, isValidUsername } from "../../src/lib/utils";
-const registerSchema = z
-  .object({
-    email: z.string().email("Endereço de e-mail inválido"),
-    username: z
-      .string()
-      .min(3, "O nome de usuário deve ter pelo menos 3 caracteres.")
-      .max(20, "O nome de usuário deve ter menos de 20 caracteres.")
-      .refine(
-        isValidUsername,
-        "O nome de usuário só pode conter letras, números, sublinhados e hífenes."
-      ),
-    displayName: z.string().optional(),
-    password: z
-      .string()
-      .min(8, "A senha deve ter pelo menos 8 caracteres.")
-      .refine(
-        (password) => validatePassword(password).isValid,
-        "A senha não atende aos requisitos de segurança."
-      ),
-    confirmPassword: z.string(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "As senhas não coincidem.",
-    path: ["confirmPassword"],
-  });
-type RegisterFormData = z.infer<typeof registerSchema>;
+import { validatePassword } from "../../src/lib/utils";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "@/schemas/registerSchema";
+import FormInput from "../../src/components/FormInput";
+
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -146,88 +116,50 @@ export default function RegisterPage() {
               )}
               <div className="space-y-4">
                 {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-200 mb-2"
-                  >
-                    Endereço de email
-                  </label>
-                  <input
-                    {...register("email")}
-                    type="email"
-                    id="email"
-                    placeholder="Digite seu e-mail"
-                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
-                    disabled={isLoading}
-                  />
-                  {errors.email && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Endereço de email"
+                  id="email"
+                  type="email"
+                  placeholder="Digite seu e-mail"
+                  disabled={isLoading}
+                  error={errors.email}
+                  {...register("email")}
+                />
                 {/* Username */}
-                <div>
-                  <label
-                    htmlFor="username"
-                    className="block text-sm font-medium text-gray-200 mb-2"
-                  >
-                    Nome de usuário
-                  </label>
-                  <input
-                    {...register("username")}
-                    type="text"
-                    id="username"
-                    placeholder="Escolha um nome"
-                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
-                    disabled={isLoading}
-                  />
-                  {errors.username && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.username.message}
-                    </p>
-                  )}
-                </div>
+                <FormInput
+                  label="Nome de usuário"
+                  id="username"
+                  type="text"
+                  placeholder="Escolha um nome"
+                  disabled={isLoading}
+                  error={errors.username}
+                  {...register("username")}
+                />
                 {/* Display Name */}
-                <div>
-                  <label
-                    htmlFor="displayName"
-                    className="block text-sm font-medium text-gray-200 mb-2"
-                  >
-                    Nome de exibição{" "}
-                    <span className="text-gray-400">(opcional)</span>
-                  </label>
-                  <input
-                    {...register("displayName")}
-                    type="text"
-                    id="displayName"
-                    placeholder="Seu nome de exibição"
-                    className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20"
-                    disabled={isLoading}
-                  />
-                </div>
+                <FormInput
+                  label="Nome de exibição (opcional)"
+                  id="displayName"
+                  type="text"
+                  placeholder="Seu nome de exibição"
+                  disabled={isLoading}
+                  {...register("displayName")}
+                />
                 {/* Password */}
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-gray-200 mb-2"
-                  >
-                    Senha
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register("password")}
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      placeholder="Crie uma senha segura"
-                      className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20 pr-10"
-                      disabled={isLoading}
-                    />
+                <FormInput
+                  label="Senha"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Crie uma senha segura"
+                  disabled={isLoading}
+                  error={errors.password}
+                  {...register("password")}
+                  inputClassName="pr-10"
+                  children={
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white transition"
+                      tabIndex={-1}
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -235,123 +167,113 @@ export default function RegisterPage() {
                         <Eye className="h-4 w-4" />
                       )}
                     </button>
-                  </div>
-                  {errors.password && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.password.message}
-                    </p>
-                  )}
-                  {watchPassword && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="mt-2 p-3 bg-white/10 rounded-lg"
-                    >
-                      <p className="text-xs font-medium text-gray-200 mb-2">
-                        Requisitos de senha:
-                      </p>
-                      <div className="space-y-1 text-xs">
-                        <div
-                          className={`flex items-center ${
-                            watchPassword.length >= 8
-                              ? "text-green-400"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {watchPassword.length >= 8 ? (
-                            <Check className="h-3 w-3 mr-1" />
-                          ) : (
-                            <X className="h-3 w-3 mr-1" />
-                          )}
-                          Pelo menos 8 caracteres
-                        </div>
-                        <div
-                          className={`flex items-center ${
-                            /[A-Z]/.test(watchPassword)
-                              ? "text-green-400"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {/[A-Z]/.test(watchPassword) ? (
-                            <Check className="h-3 w-3 mr-1" />
-                          ) : (
-                            <X className="h-3 w-3 mr-1" />
-                          )}
-                          Uma letra maiúscula
-                        </div>
-                        <div
-                          className={`flex items-center ${
-                            /[a-z]/.test(watchPassword)
-                              ? "text-green-400"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {/[a-z]/.test(watchPassword) ? (
-                            <Check className="h-3 w-3 mr-1" />
-                          ) : (
-                            <X className="h-3 w-3 mr-1" />
-                          )}
-                          Uma letra minúscula
-                        </div>
-                        <div
-                          className={`flex items-center ${
-                            /[0-9]/.test(watchPassword)
-                              ? "text-green-400"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {/[0-9]/.test(watchPassword) ? (
-                            <Check className="h-3 w-3 mr-1" />
-                          ) : (
-                            <X className="h-3 w-3 mr-1" />
-                          )}
-                          Um número
-                        </div>
-                        <div
-                          className={`flex items-center ${
-                            /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
-                              watchPassword
-                            )
-                              ? "text-green-400"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
-                            watchPassword
-                          ) ? (
-                            <Check className="h-3 w-3 mr-1" />
-                          ) : (
-                            <X className="h-3 w-3 mr-1" />
-                          )}
-                          Um caractere especial
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-                {/* Confirm Password */}
-                <div>
-                  <label
-                    htmlFor="confirmPassword"
-                    className="block text-sm font-medium text-gray-200 mb-2"
+                  }
+                />
+                {watchPassword && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="mt-2 p-3 bg-white/10 rounded-lg"
                   >
-                    Confirme sua senha
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register("confirmPassword")}
-                      type={showConfirmPassword ? "text" : "password"}
-                      id="confirmPassword"
-                      placeholder="Confirme sua senha"
-                      className="w-full bg-white/10 border border-white/20 px-4 py-3 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hover:bg-white/20 pr-10"
-                      disabled={isLoading}
-                    />
+                    <p className="text-xs font-medium text-gray-200 mb-2">
+                      Requisitos de senha:
+                    </p>
+                    <div className="space-y-1 text-xs">
+                      <div
+                        className={`flex items-center ${
+                          watchPassword.length >= 8
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {watchPassword.length >= 8 ? (
+                          <Check className="h-3 mr-1" />
+                        ) : (
+                          <X className="h-3 mr-1" />
+                        )}
+                        Pelo menos 8 caracteres
+                      </div>
+                      <div
+                        className={`flex items-center ${
+                          /[A-Z]/.test(watchPassword)
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {/[A-Z]/.test(watchPassword) ? (
+                          <Check className="h-3 mr-1" />
+                        ) : (
+                          <X className="h-3 mr-1" />
+                        )}
+                        Uma letra maiúscula
+                      </div>
+                      <div
+                        className={`flex items-center ${
+                          /[a-z]/.test(watchPassword)
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {/[a-z]/.test(watchPassword) ? (
+                          <Check className="h-3 mr-1" />
+                        ) : (
+                          <X className="h-3 mr-1" />
+                        )}
+                        Uma letra minúscula
+                      </div>
+                      <div
+                        className={`flex items-center ${
+                          /[0-9]/.test(watchPassword)
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {/[0-9]/.test(watchPassword) ? (
+                          <Check className="h-3 mr-1" />
+                        ) : (
+                          <X className="h-3 mr-1" />
+                        )}
+                        Um número
+                      </div>
+                      <div
+                        className={`flex items-center ${
+                          /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+                            watchPassword
+                          )
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+                          watchPassword
+                        ) ? (
+                          <Check className="h-3 mr-1" />
+                        ) : (
+                          <X className="h-3 mr-1" />
+                        )}
+                        Um caractere especial
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                {/* Confirm Password */}
+                <FormInput
+                  label="Confirme sua senha"
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirme sua senha"
+                  disabled={isLoading}
+                  error={errors.confirmPassword}
+                  {...register("confirmPassword")}
+                  inputClassName="pr-10"
+                  children={
                     <button
                       type="button"
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white transition"
+                      tabIndex={-1}
                     >
                       {showConfirmPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -359,13 +281,8 @@ export default function RegisterPage() {
                         <Eye className="h-4 w-4" />
                       )}
                     </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="text-red-400 text-sm mt-1">
-                      {errors.confirmPassword.message}
-                    </p>
-                  )}
-                </div>
+                  }
+                />
               </div>
               <button
                 type="submit"
@@ -394,19 +311,6 @@ export default function RegisterPage() {
               </div>
             </form>
           </div>
-        </div>
-        <div className="text-center mt-8">
-          <p className="text-xs text-gray-300">
-            Ao criar uma conta, você concorda com nossos{" "}
-            <Link href="/terms" className="text-purple-300 hover:underline">
-              Termos de Serviço
-            </Link>{" "}
-            e{" "}
-            <Link href="/privacy" className="text-purple-300 hover:underline">
-              Política de Privacidade
-            </Link>
-            .
-          </p>
         </div>
       </motion.div>
     </div>

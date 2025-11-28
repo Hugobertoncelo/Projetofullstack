@@ -9,13 +9,11 @@ import rateLimit from "express-rate-limit";
 import session from "express-session";
 import jwt from "jsonwebtoken";
 
-// Routes
 import { authRoutes } from "./routes/auth";
 import { messageRoutes, setSocketInstance } from "./routes/messages-simple";
 import { conversationRoutes } from "./routes/conversations";
 import { userRoutes } from "./routes/users";
 
-// Middleware
 import { socketHandler } from "./services/socket-simple";
 import { errorHandler } from "./middleware/errorHandler";
 import { validateJWT } from "./middleware/auth";
@@ -25,20 +23,17 @@ import {
   securityHeaders,
 } from "./middleware/security";
 
-// Configuration
 import { setupSwagger } from "./config/swagger";
 import Logger, { requestLogger } from "./config/logger";
 import { elasticsearchService } from "./config/elasticsearch";
-import "./config/queues"; // Initialize queues
+import "./config/queues";
 
-// Database
 import { prisma } from "./lib/prisma";
 import { redis } from "./lib/redis";
 
 const app = express();
 const server = createServer(app);
 
-// Initialize Swagger Documentation
 setupSwagger(app);
 
 const allowedOrigins = [
@@ -47,7 +42,6 @@ const allowedOrigins = [
   "https://chat-frontend-2a0i.onrender.com",
 ];
 
-// Socket.IO Server
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
@@ -62,7 +56,6 @@ const io = new Server(server, {
   },
 });
 
-// Session configuration
 app.use(
   session({
     secret:
@@ -72,16 +65,14 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );
 
-// Security middleware
 app.use(securityHeaders);
 app.use(sanitizeInput);
 
-// Core middleware
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -117,16 +108,14 @@ app.use(
   })
 );
 
-// Request logging
 app.use(requestLogger);
 app.use(compression());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Rate limiting
 app.use(
   rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000"), // 15 minutes
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000"),
     max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "100"),
     message: {
       success: false,
@@ -137,50 +126,13 @@ app.use(
   })
 );
 
-// Additional rate limiting for auth endpoints
-app.use("/api/auth", advancedRateLimit(20, 15 * 60 * 1000)); // 20 requests per 15 minutes
+app.use("/api/auth", advancedRateLimit(20, 15 * 60 * 1000));
 
-/**
- * @swagger
- * /health:
- *   get:
- *     summary: Health check endpoint
- *     description: Returns the current health status of the API
- *     tags: [Health]
- *     responses:
- *       200:
- *         description: API is healthy
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                   example: "ok"
- *                 timestamp:
- *                   type: string
- *                   format: date-time
- *                 services:
- *                   type: object
- *                   properties:
- *                     database:
- *                       type: string
- *                       example: "connected"
- *                     redis:
- *                       type: string
- *                       example: "connected"
- *                     elasticsearch:
- *                       type: string
- *                       example: "connected"
- */
 app.get("/health", async (req, res) => {
   try {
-    // Check database connection
     await prisma.$queryRaw`SELECT 1`;
     const dbStatus = "connected";
 
-    // Check Redis connection
     let redisStatus = "disconnected";
     try {
       if (redis) {
@@ -191,7 +143,6 @@ app.get("/health", async (req, res) => {
       redisStatus = "disconnected";
     }
 
-    // Check Elasticsearch
     const elasticStatus = elasticsearchService.isAvailable()
       ? "connected"
       : "disconnected";
@@ -215,13 +166,11 @@ app.get("/health", async (req, res) => {
   }
 });
 
-// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", validateJWT, messageRoutes);
 app.use("/api/conversations", validateJWT, conversationRoutes);
 app.use("/api/users", validateJWT, userRoutes);
 
-// Socket.IO Authentication Middleware
 io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth.token;
@@ -254,22 +203,18 @@ io.use(async (socket, next) => {
   }
 });
 
-// Initialize Socket.IO handlers
 socketHandler(io);
 setSocketInstance(io);
 
-// Error handling middleware (must be last)
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001;
 
 async function startServer() {
   try {
-    // Database connection
     await prisma.$connect();
     Logger.info("✅ Database connected");
 
-    // Redis connection
     if (redis) {
       await redis.ping();
       Logger.info("✅ Redis connected");
@@ -277,7 +222,6 @@ async function startServer() {
       Logger.warn("⚠️ Redis not configured, using memory fallback");
     }
 
-    // Start server
     server.listen(PORT, () => {
       Logger.info(`🚀 Server running on port ${PORT}`);
       Logger.info(`📱 Socket.io server ready`);
@@ -290,7 +234,6 @@ async function startServer() {
   }
 }
 
-// Graceful shutdown handlers
 process.on("SIGTERM", async () => {
   Logger.info("SIGTERM received, shutting down gracefully");
   await prisma.$disconnect();
@@ -305,12 +248,10 @@ process.on("SIGINT", async () => {
   process.exit(0);
 });
 
-// Handle unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   Logger.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
-// Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
   Logger.error("Uncaught Exception:", error);
   process.exit(1);

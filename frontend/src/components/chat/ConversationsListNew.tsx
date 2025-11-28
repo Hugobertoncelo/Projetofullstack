@@ -46,7 +46,6 @@ export default function ConversationsList({
   );
   const { user } = useAuth();
 
-  // Function to reset unread count for a conversation
   const resetUnreadCount = (conversationId: string) => {
     setUnreadCounts((prev) => ({
       ...prev,
@@ -54,13 +53,10 @@ export default function ConversationsList({
     }));
   };
 
-  // Force reset unread count when conversation changes and is actively being viewed
   useEffect(() => {
     if (selectedConversationId) {
-      // Immediate reset
       resetUnreadCount(selectedConversationId);
 
-      // Additional reset after a short delay to ensure messages have loaded
       const timeoutId = setTimeout(() => {
         resetUnreadCount(selectedConversationId);
       }, 500);
@@ -71,9 +67,6 @@ export default function ConversationsList({
 
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
-      // Only increment unread count if:
-      // 1. Message is not from current user
-      // 2. Message is not in currently selected conversation
       if (
         message.senderId !== user?.id &&
         message.conversationId !== selectedConversationId
@@ -82,9 +75,7 @@ export default function ConversationsList({
           ...prev,
           [message.conversationId]: (prev[message.conversationId] || 0) + 1,
         }));
-      }
-      // If message is in selected conversation, ensure count is 0
-      else if (message.conversationId === selectedConversationId) {
+      } else if (message.conversationId === selectedConversationId) {
         setUnreadCounts((prev) => ({
           ...prev,
           [message.conversationId]: 0,
@@ -151,7 +142,6 @@ export default function ConversationsList({
 
   return (
     <div className="flex flex-col h-full">
-      {}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-white flex items-center">
@@ -176,7 +166,6 @@ export default function ConversationsList({
           />
         </div>
       </div>
-      {}
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         {isLoading ? (
           <div className="flex justify-center py-12">
@@ -308,7 +297,6 @@ export default function ConversationsList({
           </div>
         )}
       </div>
-      {}
       {showStartNewChat && (
         <StartNewChat
           isOpen={showStartNewChat}

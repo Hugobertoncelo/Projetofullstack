@@ -2,7 +2,6 @@ import { body, validationResult } from "express-validator";
 import { Request, Response, NextFunction } from "express";
 import Logger from "../config/logger";
 
-// Handle validation errors
 export const handleValidationErrors = (
   req: Request,
   res: Response,
@@ -29,7 +28,6 @@ export const handleValidationErrors = (
   next();
 };
 
-// Auth validation rules
 export const validateRegister = [
   body("email")
     .isEmail()
@@ -88,7 +86,6 @@ export const validatePasswordUpdate = [
   handleValidationErrors,
 ];
 
-// Message validation rules
 export const validateMessage = [
   body("content")
     .isLength({ min: 1, max: 2000 })
@@ -113,7 +110,6 @@ export const validateMessageEdit = [
   handleValidationErrors,
 ];
 
-// Conversation validation rules
 export const validateDirectConversation = [
   body("userId").isUUID().withMessage("User ID must be a valid UUID"),
   handleValidationErrors,
@@ -147,7 +143,6 @@ export const validateAddMembers = [
   handleValidationErrors,
 ];
 
-// User validation rules
 export const validateUserUpdate = [
   body("displayName")
     .optional()
@@ -158,7 +153,6 @@ export const validateUserUpdate = [
   handleValidationErrors,
 ];
 
-// Search validation rules
 export const validateSearch = [
   body("query")
     .isLength({ min: 1, max: 100 })
@@ -175,7 +169,6 @@ export const validateSearch = [
   handleValidationErrors,
 ];
 
-// Pagination validation
 export const validatePagination = [
   body("page")
     .optional()

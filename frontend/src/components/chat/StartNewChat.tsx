@@ -82,7 +82,6 @@ export default function StartNewChat({
           className="bg-background border border-border rounded-lg w-full max-w-md max-h-[80vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {}
           <div className="p-4 border-b border-border flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <UserPlus size={20} className="text-primary" />
@@ -95,7 +94,6 @@ export default function StartNewChat({
               <X size={20} />
             </button>
           </div>
-          {}
           <div className="p-4 border-b border-border">
             <div className="relative">
               <Search
@@ -111,7 +109,6 @@ export default function StartNewChat({
               />
             </div>
           </div>
-          {}
           <div className="overflow-y-auto max-h-96">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
@@ -182,7 +179,6 @@ export default function StartNewChat({
               </div>
             )}
           </div>
-          {}
           <div className="p-4 border-t border-border text-center">
             <p className="text-xs text-muted-foreground">
               {filteredUsers.length} usuário

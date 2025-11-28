@@ -17,12 +17,10 @@ class ElasticsearchService {
         maxRetries: 3,
       });
 
-      // Test connection
       await this.client.ping();
       this.isConnected = true;
       Logger.info("✅ Elasticsearch connected successfully");
 
-      // Initialize indices
       await this.initializeIndices();
     } catch (error) {
       Logger.warn(

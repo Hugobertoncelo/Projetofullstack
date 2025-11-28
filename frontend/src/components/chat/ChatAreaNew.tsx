@@ -15,7 +15,6 @@ interface ChatAreaProps {
 export default function ChatArea({
   conversation,
   onToggleSidebar,
-  isSidebarOpen,
 }: ChatAreaProps) {
   const { user } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,7 +40,6 @@ export default function ChatArea({
   }, [conversation?.id, user?.id]);
   useEffect(() => {
     if (!conversation?.id) return;
-    // Atualiza o contador de mensagens ao mudar de conversa
     setMessages([]);
     loadMessages();
   }, [conversation?.id]);
@@ -75,7 +73,6 @@ export default function ChatArea({
           if (prev.some((u) => u.userId === data.userId)) return prev;
           return [...prev, { userId: data.userId, username: data.username }];
         });
-        // Remove typing after 3s if no stopTyping received
         if (typingTimeouts.current[data.userId])
           clearTimeout(typingTimeouts.current[data.userId]);
         typingTimeouts.current[data.userId] = setTimeout(() => {
@@ -151,7 +148,6 @@ export default function ChatArea({
       console.error("Error sending message:", error);
       setNewMessage(messageContent);
 
-      // Show user-friendly error
       alert("Erro ao enviar mensagem. Tente novamente.");
     }
   };

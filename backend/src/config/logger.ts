@@ -1,7 +1,6 @@
 import winston from "winston";
 import path from "path";
 
-// Define log levels
 const levels = {
   error: 0,
   warn: 1,
@@ -10,7 +9,6 @@ const levels = {
   debug: 4,
 };
 
-// Define level colors
 const colors = {
   error: "red",
   warn: "yellow",
@@ -21,7 +19,6 @@ const colors = {
 
 winston.addColors(colors);
 
-// Define log format
 const format = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss:ms" }),
   winston.format.colorize({ all: true }),
@@ -30,7 +27,6 @@ const format = winston.format.combine(
   )
 );
 
-// Define transports
 const transports = [
   new winston.transports.Console(),
   new winston.transports.File({
@@ -50,7 +46,6 @@ const transports = [
   }),
 ];
 
-// Create logger
 const Logger = winston.createLogger({
   level: process.env.NODE_ENV === "development" ? "debug" : "warn",
   levels,
@@ -58,7 +53,6 @@ const Logger = winston.createLogger({
   transports,
 });
 
-// Request logging middleware
 export const requestLogger = (req: any, res: any, next: any) => {
   const start = Date.now();
 
