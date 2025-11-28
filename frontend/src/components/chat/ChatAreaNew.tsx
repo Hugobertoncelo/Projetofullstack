@@ -47,13 +47,17 @@ export default function ChatArea({
           if (prev.some((m) => m.id === message.id)) return prev;
           return [...prev, message];
         });
+        // Atualiza o contador de mensagens local
+        if (conversation.messageCount !== undefined) {
+          conversation.messageCount += 1;
+        }
       }
     };
     socketService.onMessageReceived(handleNewMessage);
     return () => {
       socketService.offMessageReceived(handleNewMessage);
     };
-  }, [conversation?.id, user?.id]);
+  }, [conversation]);
   useEffect(() => {
     if (!conversation?.id || !user?.id) return;
     const handleUserTyping = (data: {
