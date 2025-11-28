@@ -33,8 +33,8 @@ Este projeto é um sistema de chat moderno, fullstack, com autenticação, chat 
    ```
 2. Inicie o backend e frontend:
    ```bash
-   npm run server:dev # na raiz ou backend
-   npm run dev        # na raiz ou frontend
+   npm run server:dev
+   npm run dev
    ```
 3. Acesse: http://localhost:3002
 
