@@ -16,7 +16,6 @@ export const socketHandler = (io: Server) => {
       socket.disconnect();
       return;
     }
-    console.log(`👤 User ${socket.user.username} connected`);
     await prisma.user.update({
       where: { id: socket.user.id },
       data: {
@@ -47,11 +46,6 @@ export const socketHandler = (io: Server) => {
         });
         if (conversation) {
           socket.join(`conversation:${conversationId}`);
-          console.log(
-            `📝 User ${
-              socket.user!.username
-            } joined conversation ${conversationId}`
-          );
         }
       } catch (error) {
         console.error("Error joining conversation:", error);
@@ -59,9 +53,6 @@ export const socketHandler = (io: Server) => {
     });
     socket.on("leaveConversation", (conversationId: string) => {
       socket.leave(`conversation:${conversationId}`);
-      console.log(
-        `📤 User ${socket.user!.username} left conversation ${conversationId}`
-      );
     });
     socket.on("sendMessage", async (messageData: any) => {
       try {
@@ -120,9 +111,6 @@ export const socketHandler = (io: Server) => {
           message,
           conversationId: messageData.conversationId,
         });
-        console.log(
-          `💬 Message sent in conversation ${messageData.conversationId}`
-        );
       } catch (error) {
         console.error("Error sending message:", error);
         socket.emit("error", { message: "Failed to send message" });
@@ -152,7 +140,6 @@ export const socketHandler = (io: Server) => {
       }
     });
     socket.on("disconnect", async () => {
-      console.log(`👋 User ${socket.user!.username} disconnected`);
       try {
         await prisma.user.update({
           where: { id: socket.user!.id },
@@ -171,7 +158,6 @@ export const socketHandler = (io: Server) => {
   });
   const cleanup = async () => {
     try {
-      console.log("🧹 Running socket cleanup...");
     } catch (error) {
       console.error("Cleanup error:", error);
     }

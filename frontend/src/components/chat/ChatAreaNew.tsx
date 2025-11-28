@@ -138,17 +138,10 @@ export default function ChatArea({
     const messageContent = newMessage.trim();
     setNewMessage("");
     try {
-      console.log("Sending message:", {
-        conversationId: conversation.id,
-        content: messageContent,
-      });
-
       const response = await apiService.sendMessage(conversation.id, {
         content: messageContent,
         type: "TEXT",
       });
-
-      console.log("Message response:", response);
 
       if (!response.success) {
         console.error("Message send failed:", response);

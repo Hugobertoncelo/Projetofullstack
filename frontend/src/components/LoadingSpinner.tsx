@@ -20,7 +20,7 @@ export default function LoadingSpinner({
         className
       )}
     >
-      <span className="sr-only">Loading...</span>
+      <span className="sr-only">Carregando...</span>
     </div>
   );
 }

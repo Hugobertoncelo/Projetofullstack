@@ -147,6 +147,4 @@ export const setupSwagger = (app: Express) => {
     res.setHeader("Content-Type", "application/json");
     res.send(specs);
   });
-
-  console.log("📚 Swagger documentation available at /api/docs");
 };

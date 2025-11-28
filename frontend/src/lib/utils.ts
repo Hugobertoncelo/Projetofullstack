@@ -67,19 +67,19 @@ export function validatePassword(password: string): {
 } {
   const errors: string[] = [];
   if (password.length < 8) {
-    errors.push("Password must be at least 8 characters long");
+    errors.push("A senha deve ter pelo menos 8 caracteres.");
   }
   if (!/[A-Z]/.test(password)) {
-    errors.push("Password must contain at least one uppercase letter");
+    errors.push("A senha deve conter pelo menos uma letra maiúscula.");
   }
   if (!/[a-z]/.test(password)) {
-    errors.push("Password must contain at least one lowercase letter");
+    errors.push("A senha deve conter pelo menos uma letra minúscula.");
   }
   if (!/[0-9]/.test(password)) {
-    errors.push("Password must contain at least one number");
+    errors.push("A senha deve conter pelo menos um número.");
   }
   if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-    errors.push("Password must contain at least one special character");
+    errors.push("A senha deve conter pelo menos um caractere especial.");
   }
   return {
     isValid: errors.length === 0,

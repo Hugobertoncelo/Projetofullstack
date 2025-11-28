@@ -36,10 +36,8 @@ export default function StartNewChat({
   const loadUsers = async () => {
     try {
       setIsLoading(true);
-      console.log("👥 Loading users...");
       const response = await apiService.getAvailableUsers();
       if (response.success && response.data?.users) {
-        console.log("✅ Users loaded:", response.data.users.length);
         const filteredUsers = response.data.users.filter(
           (u: User) => u.id !== user?.id
         );
@@ -55,7 +53,6 @@ export default function StartNewChat({
   };
   const handleStartConversation = async (userId: string) => {
     try {
-      console.log("🚀 Starting conversation with user:", userId);
       onStartConversation(userId);
       onClose();
     } catch (error) {

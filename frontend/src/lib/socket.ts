@@ -13,19 +13,9 @@ class SocketService {
   private messageListeners = new Map<Function, (...args: any[]) => void>();
 
   connect(token: string): void {
-    if (DEBUG) {
-      console.log(
-        "🔌 Socket.connect called with token:",
-        token ? "present" : "missing"
-      );
-    }
-
     if (this.socket?.connected) {
-      if (DEBUG) console.log("🔌 Socket already connected, skipping");
       return;
     }
-
-    if (DEBUG) console.log("🔌 Creating new socket connection...");
 
     this.socket = io(SOCKET_URL, {
       auth: {
@@ -45,36 +35,24 @@ class SocketService {
     if (!this.socket) return;
 
     this.socket.on("connect", () => {
-      if (DEBUG) console.log("✅ Connected to server");
       this.reconnectAttempts = 0;
     });
 
-    this.socket.on("disconnect", (reason) => {
-      if (DEBUG) console.log("❌ Disconnected from server:", reason);
-    });
+    this.socket.on("disconnect", (reason) => {});
 
     this.socket.on("connect_error", (error) => {
-      console.error("Socket connection error:", error);
       this.handleReconnect();
     });
 
-    this.socket.on("error", (error) => {
-      console.error("Socket error:", error);
-    });
+    this.socket.on("error", (error) => {});
   }
 
   private handleReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error("Max socket reconnection attempts reached");
       return;
     }
 
     this.reconnectAttempts++;
-    if (DEBUG) {
-      console.log(
-        `🔄 Reconnecting... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
-      );
-    }
 
     setTimeout(() => {
       this.socket?.connect();
@@ -94,15 +72,11 @@ class SocketService {
     type?: string;
     replyToId?: string;
   }): void {
-    if (DEBUG) console.log("📤 Socket.sendMessage called:", message);
     this.socket?.emit("send_message", message);
   }
 
   onMessageReceived(callback: (message: any) => void): void {
-    if (DEBUG) console.log("👂 Setting up onMessageReceived listener");
-
     const wrapper = (message: any) => {
-      if (DEBUG) console.log("📨 Socket.onMessageReceived triggered:", message);
       callback(message);
     };
 
@@ -111,27 +85,18 @@ class SocketService {
   }
 
   offMessageReceived(callback: (message: any) => void): void {
-    if (DEBUG) console.log("👂 Removing onMessageReceived listener");
-
     const wrapper = this.messageListeners.get(callback);
     if (wrapper) {
       this.socket?.off("message_received", wrapper);
       this.messageListeners.delete(callback);
-      if (DEBUG) console.log("✅ Listener removed successfully");
-    } else {
-      if (DEBUG) console.log("⚠️ No matching listener found to remove");
     }
   }
 
   joinConversation(conversationId: string): void {
-    if (DEBUG)
-      console.log("🔌 Socket.joinConversation called:", conversationId);
     this.socket?.emit("join_conversation", conversationId);
   }
 
   leaveConversation(conversationId: string): void {
-    if (DEBUG)
-      console.log("🔌 Socket.leaveConversation called:", conversationId);
     this.socket?.emit("leave_conversation", conversationId);
   }
 

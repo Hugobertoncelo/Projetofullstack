@@ -13,17 +13,11 @@ export function useConversations() {
       setError(null);
       const response = await apiService.getConversations();
       if (response.success && response.data?.conversations) {
-        console.log(
-          "✅ Conversations loaded:",
-          response.data.conversations.length
-        );
         setConversations(response.data.conversations);
       } else {
-        console.error("❌ API Error:", response.error);
         setError(response.error || "Failed to load conversations");
       }
     } catch (error: any) {
-      console.error("💥 Error fetching conversations:", error);
       setError("Failed to load conversations");
     } finally {
       setIsLoading(false);
@@ -31,33 +25,18 @@ export function useConversations() {
   }, []);
   const createDirectConversation = useCallback(async (userId: string) => {
     try {
-      console.log("🚀 Creating direct conversation with userId:", userId);
       const response = await apiService.createDirectConversation(userId);
-      console.log("📡 API Response:", response);
       if (response.success && response.data?.conversation) {
         const newConversation = response.data.conversation;
-        console.log("✅ New conversation created:", {
-          id: newConversation.id,
-          isGroup: newConversation.isGroup,
-          membersCount: newConversation.members?.length,
-          hasMessages: !!newConversation.messages,
-        });
         setConversations((prev) => {
           const updated = [newConversation, ...prev];
-          console.log(
-            "📝 Updated conversations list:",
-            updated.length,
-            "total"
-          );
           return updated;
         });
         return newConversation;
       } else {
-        console.error("❌ API Error:", response.error);
         throw new Error(response.error || "Failed to create conversation");
       }
     } catch (error: any) {
-      console.error("💥 Error creating conversation:", error);
       throw error;
     }
   }, []);
@@ -76,7 +55,6 @@ export function useConversations() {
           throw new Error(response.error || "Failed to create group");
         }
       } catch (error: any) {
-        console.error("Error creating group:", error);
         throw error;
       }
     },
@@ -125,11 +103,9 @@ export function useConversations() {
         );
         return true;
       } else {
-        console.error("❌ API Error:", response.error);
         throw new Error(response.error || "Failed to delete conversation");
       }
     } catch (error: any) {
-      console.error("💥 Error deleting conversation:", error);
       throw error;
     }
   }, []);
@@ -139,7 +115,6 @@ export function useConversations() {
 
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
-      console.log("📩 New message received:", message);
       setConversations((prev) =>
         prev
           .map((conv) =>
@@ -160,7 +135,6 @@ export function useConversations() {
     };
 
     const handleConversationUpdate = (conversation: Conversation) => {
-      console.log("🔄 Conversation updated:", conversation.id);
       updateConversation(conversation);
     };
 
@@ -206,7 +180,6 @@ export function useConversation(conversationId: string | null) {
         setError(response.error || "Failed to load conversation");
       }
     } catch (error: any) {
-      console.error("Error fetching conversation:", error);
       setError("Failed to load conversation");
     } finally {
       setIsLoading(false);
@@ -235,7 +208,6 @@ export function useConversation(conversationId: string | null) {
           setError(response.error || "Failed to load messages");
         }
       } catch (error: any) {
-        console.error("Error fetching messages:", error);
         setError("Failed to load messages");
       } finally {
         setIsLoadingMessages(false);

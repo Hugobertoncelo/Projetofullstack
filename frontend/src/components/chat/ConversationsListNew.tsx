@@ -71,7 +71,6 @@ export default function ConversationsList({
 
   useEffect(() => {
     const handleNewMessage = (message: Message) => {
-      console.log("📩 New message in conversations list:", message);
       // Only increment unread count if:
       // 1. Message is not from current user
       // 2. Message is not in currently selected conversation
@@ -79,10 +78,6 @@ export default function ConversationsList({
         message.senderId !== user?.id &&
         message.conversationId !== selectedConversationId
       ) {
-        console.log(
-          "📈 Incrementing unread count for:",
-          message.conversationId
-        );
         setUnreadCounts((prev) => ({
           ...prev,
           [message.conversationId]: (prev[message.conversationId] || 0) + 1,

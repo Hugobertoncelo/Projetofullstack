@@ -56,24 +56,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [user]);
   const checkAuth = async () => {
     try {
-      console.log("🔐 Checking authentication...");
       const token = apiService.getToken();
       if (!token) {
-        console.log("❌ No token found");
         setIsLoading(false);
         return;
       }
-      console.log("🎫 Token found, validating...");
       const response = await apiService.getCurrentUser();
       if (response.success && response.data?.user) {
-        console.log("✅ User authenticated:", response.data.user.username);
         setUser(response.data.user);
       } else {
-        console.log("❌ Token invalid, clearing...");
         apiService.clearToken();
       }
     } catch (error) {
-      console.error("💥 Auth check failed:", error);
       apiService.clearToken();
     } finally {
       setIsLoading(false);
@@ -102,7 +96,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
       return { success: false, error: response.error || "Falha no login" };
     } catch (error: any) {
-      console.error("Login error:", error);
       return {
         success: false,
         error: error.response?.data?.error || "Falha no login",
@@ -127,12 +120,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setUser(response.data.user);
         return { success: true };
       }
-      return { success: false, error: response.error || "Registration failed" };
+      return { success: false, error: response.error || "Falha no registro" };
     } catch (error: any) {
-      console.error("Registration error:", error);
       return {
         success: false,
-        error: error.response?.data?.error || "Registration failed",
+        error: error.response?.data?.error || "Falha no registro",
       };
     }
   };
@@ -140,7 +132,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       await apiService.logout();
     } catch (error) {
-      console.error("Logout error:", error);
     } finally {
       apiService.clearToken();
       socketService.disconnect();

@@ -33,7 +33,7 @@ const registerSchema = z
     displayName: z.string().optional(),
     password: z
       .string()
-      .min(8, "Password must be at least 8 characters")
+      .min(8, "A senha deve ter pelo menos 8 caracteres.")
       .refine(
         (password) => validatePassword(password).isValid,
         "A senha não atende aos requisitos de segurança."
@@ -88,10 +88,10 @@ export default function RegisterPage() {
       if (result.success) {
         router.push("/");
       } else {
-        setError(result.error || "Registration failed");
+        setError(result.error || "Falha no registro");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setError("Ocorreu um erro inesperado");
     } finally {
       setIsLoading(false);
     }
@@ -323,7 +323,7 @@ export default function RegisterPage() {
                           ) : (
                             <X className="h-3 w-3 mr-1" />
                           )}
-                          Um caractér especial
+                          Um caractere especial
                         </div>
                       </div>
                     </motion.div>

@@ -7,7 +7,6 @@ const router = express.Router();
 let socketInstance: any = null;
 export const setSocketInstance = (io: any) => {
   socketInstance = io;
-  console.log("✅ Socket.io instance configurada nas rotas de mensagens");
 };
 router.get(
   "/conversation/:conversationId",
@@ -291,16 +290,12 @@ router.post(
       where: { id: conversationId },
       data: { updatedAt: new Date() },
     });
-    console.log(
-      `📡 Tentando emitir mensagem para conversation:${conversationId}`
-    );
+
     if (socketInstance) {
-      console.log("✅ Emitindo message_received via Socket.io");
       socketInstance
         .to(`conversation:${conversationId}`)
         .emit("message_received", message);
     } else {
-      console.log("❌ Socket.io instance não disponível");
     }
     res.status(201).json({
       success: true,

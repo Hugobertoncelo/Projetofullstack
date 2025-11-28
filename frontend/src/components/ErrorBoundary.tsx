@@ -36,17 +36,17 @@ class ErrorBoundary extends React.Component<
           <div className="flex items-center justify-center min-h-screen bg-gray-900">
             <div className="text-center p-8 bg-gray-800 rounded-lg max-w-md">
               <h2 className="text-xl font-bold text-white mb-4">
-                Oops! Something went wrong
+                Ops! Algo deu errado.
               </h2>
               <p className="text-gray-300 mb-4">
-                We encountered an unexpected error. Please refresh the page to
-                try again.
+                Ocorreu um erro inesperado. Atualize a página para tentar
+                novamente.
               </p>
               <button
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
-                Refresh Page
+                Atualizar página
               </button>
             </div>
           </div>
